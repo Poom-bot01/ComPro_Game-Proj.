@@ -1,0 +1,9 @@
+shogunxd
+14
+1450
+150
+200
+50
+118
+1
+throne_room
