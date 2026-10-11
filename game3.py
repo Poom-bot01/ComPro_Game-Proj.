@@ -186,5 +186,5 @@ def main() -> None:
         print("\n\ngame aborted. bye")
 
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+ #   main()
