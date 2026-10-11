@@ -1,7 +1,4 @@
-# Arcane Merchant - interface only. Run with:  python3 arcane_merchant.py
-
-users = {"demo": "123456"}   # username: password (fake, in memory)
-
+users = {"demo": "123456"}
 
 def show_menu(title, options):
     print(f"\n=== {title} ===")
@@ -9,12 +6,10 @@ def show_menu(title, options):
         print(f"{number}. {text}")
     return input("Choose: ").strip()
 
-
 def reset_password(name):
     print("\n--- Reset password ---")
     users[name] = input("New password: ")      # TODO: verify identity first
     print("Password changed. Please log in again.")
-
 
 def login():
     name = input("Username: ")
@@ -35,7 +30,6 @@ def login():
     reset_password(name)
     return None
 
-
 def sign_up():
     name = input("New username: ")
     if name == "" or name in users:
@@ -43,7 +37,6 @@ def sign_up():
     else:
         users[name] = input("New password: ")
         print("Account created!")
-
 
 def game_hub(name):
     while True:
@@ -60,7 +53,6 @@ def game_hub(name):
         else:
             print("Please choose 1-4.")
 
-
 def main():
     print("***** ARCANE MERCHANT *****")
     while True:
@@ -76,6 +68,5 @@ def main():
             break
         else:
             print("Please choose 1-3.")
-
 
 main()
