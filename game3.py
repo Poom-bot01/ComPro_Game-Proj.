@@ -1,29 +1,27 @@
 import msvcrt
-import os
+# import os
 import random
 import sys
 import time
 
-os.system("")
+total_levels = 3 # total lvls
 
-
-TOTAL_LEVELS = 3 # total lvls
-
-LEVEL_TIME_LIMITS = {
+level_time = {
     1: 10.0,
     2: 7.0,
     3: 5.0,
 } # timer based on lvls
 
-WORD_POOLS = {
-    1: ["apple", "house", "river", "cloud", "happy", "music", "green", "table"],
-    2: ["keyboard", "mountain", "elephant", "computer", "umbrella", "triangle", "calendar", "universe"],
+pools = {
+    1: ["yoho", "god", "wallah", "ZOOS", "triplet", "doublet", "easymode", "superrevolution"],
+    2: ["artemis", "fabledlegacy", "elephantintheroom", "iamconputerguy", "ambussingough", "triangledriod", "adrenalines", "typethisasfastasyoucanusuallyyoucantlol"],
     3: ["extraordinary", "responsibility", "claustrophobia", "misunderstanding",
-        "uncomfortable", "revolutionary", "disproportionate", "unconventional"],
+        "uncomfortable", "revolutionary", "disproportionate", "mostunconventionalpickeverlikeifyougotthisinplaythroughthengg"],
 } # word pools based on lvl (words are subject to change)
 
-REFRESH_INTERVAL = 0.05 # how often countdown redraws
+interval = 0.05 # how often countdown redraws
 
+quit = object() # marker meaning "player pressed ctrl+c"  (NEW)
 
 
 def calculate_score_gain(time_remaining: float, time_limit: float, level: int) -> int:
@@ -35,16 +33,13 @@ def calculate_score_loss(level: int) -> int:
 # score calc here
     return 0
 
-def clear_screen() -> None: # clear screen in terminal
-    os.system("cls")
-
 
 def pick_word(level: int) -> str: # pick random words from pools
-    return random.choice(WORD_POOLS[level])
+    return random.choice(pools[level])
 
 
 def get_time_limit(level: int) -> float: # return time limit for given lvls
-    return LEVEL_TIME_LIMITS[level]
+    return level_time[level]
 
 
 def flush_keyboard_buffer() -> None: # discard players who typed input too early
@@ -52,13 +47,22 @@ def flush_keyboard_buffer() -> None: # discard players who typed input too early
         msvcrt.getwch()
 
 
-def draw_status_line(time_left: float, typed: str) -> None: # player status
-    sys.stdout.write(f"\r\033[K  Time left: {max(time_left, 0):4.1f}s  |  > {typed}")
+def wait_for_key(message: str) -> bool:
+    print(message)
+    ch = msvcrt.getwch()
+    if ch in ("\x00", "\xe0"): # special keys send 2 chars swallow the 2nd
+        msvcrt.getwch()
+    if ch == "\x03":
+        return False
+    return True
+
+
+def draw_status_line(time_left: float, typed: str) -> None: # player status in game
+    sys.stdout.write(f"\r\033[K  time left: {max(time_left, 0):4.1f}s  |  > {typed}")
     sys.stdout.flush()
 
 
 def read_input_with_timer(time_limit: float): # read player typing character while showing live timer
-
     typed = ""
     flush_keyboard_buffer()
     start = time.monotonic()
@@ -73,7 +77,7 @@ def read_input_with_timer(time_limit: float): # read player typing character whi
         draw_status_line(time_left, typed)
 
         if not msvcrt.kbhit():
-            time.sleep(REFRESH_INTERVAL)
+            time.sleep(interval)
             continue
 
         ch = msvcrt.getwch()
@@ -84,35 +88,38 @@ def read_input_with_timer(time_limit: float): # read player typing character whi
             return typed, time_left
         elif ch == "\x08":
             typed = typed[:-1]
-        elif ch == "\x03":
-            raise KeyboardInterrupt
+        elif ch == "\x03": 
+            print()
+            return quit, 0.0
         elif ch in ("\x00", "\xe0"):
             msvcrt.getwch()
         elif ch.isprintable():
             typed += ch
 
 
-def play_level(level: int): # playing lvls
+def play_level(level: int): # during lvls, returns none if player quits
     word = pick_word(level)
     time_limit = get_time_limit(level)
 
-    clear_screen()
-    print(f"=== PROGRESS {level} / {TOTAL_LEVELS} ===")
-    print(f"Time limit: {time_limit:.1f}s\n")
-    input("Press Enter when you're ready...")
+    print(f"=== progress {level} / {total_levels} ===")
+    print(f"time limit: {time_limit:.1f}s\n")
+    if not wait_for_key("press any key if you ready"):
+        return None
 
-    print(f"\n  Type this word:  >>> {word} <<<\n") # display word
+    print(f"type this:  >>> {word} <<<\n") # display word
 
     typed, time_remaining = read_input_with_timer(time_limit)
 
+    if typed is quit:
+        return None
     if typed is None: # when player fail
-        print("\n  Time's up!")
+        print("\n  times up")
         return False, 0.0, time_limit
     if typed.strip() != word:
-        print(f"\n  Wrong! You typed '{typed}', expected '{word}'.")
+        print(f"\n  wrong you typed '{typed}', expected '{word}'.")
         return False, time_remaining, time_limit
 
-    print("\n  Correct!")
+    print("correct")
     return True, time_remaining, time_limit
 
 
@@ -124,46 +131,40 @@ def next_level_after(level: int, success: bool) -> int: # to next lvl
 
 def show_result(success: bool, score: int, amount: int) -> None: # display current scores
     print(f"  {'+' if success else '-'}{amount} score")
-    print(f"  Current score: {score}")
+    print(f"  current score: {score}")
     time.sleep(1.5)
 
 
-def show_intro() -> None: # intro (subject to change)
-    clear_screen()
+def show_intro() -> bool: # intro (subject to change), returns False if ctrl+c
     print("=" * 40)
-    print("        typer game")
+    print(" typer game")
     print("=" * 40)
-    print(f"""
-Rules:
-  - There are {TOTAL_LEVELS} progress levels. Words get harder and the
-    timer gets shorter as you progress.
-  - Type the word shown, then press Enter before time runs out.
-  - Correct + in time  -> you gain score.
-  - Wrong or too slow  -> you lose score and go back one level.
-  - Clear level {TOTAL_LEVELS} to move on to the next stage!
-""")
-    input("Press Enter to start...")
+    print("welcome... to type game... type as fast as you can")
+    return wait_for_key("press any key to start") # CHANGED: was input()
 
 
 def start_next_stage(score: int) -> int: # called when player clear last lvl
-    clear_screen()
     print("=" * 40)
-    print("   LEVELS CLEARED! ENTERING NEXT STAGE...")
+    print("nice one. to the next stage")
     print("=" * 40)
-    print(f"\n  Score carried over: {score}\n")
+    print(f"score: {score}\n")
     time.sleep(2)
     # next stage
     return score
 
 
-def play_game() -> int:
+def play_game(): # returns final score, or none if player quits
     score = 0
     level = 1
 
-    show_intro()
+    if not show_intro():
+        return None
 
-    while level <= TOTAL_LEVELS:
-        success, time_remaining, time_limit = play_level(level)
+    while level <= total_levels:
+        result = play_level(level)
+        if result is None:
+            return None
+        success, time_remaining, time_limit = result
 
         if success:
             amount = calculate_score_gain(time_remaining, time_limit, level)
@@ -180,11 +181,10 @@ def play_game() -> int:
 
 
 def main() -> None:
-    try:
-        play_game()
-    except KeyboardInterrupt:
-        print("\n\nGame aborted. Bye!")
+    score = play_game()
+    if score is None:
+        print("\n\ngame aborted. bye")
 
 
-#if __name__ == "__main__":
-#    main()
+if __name__ == "__main__":
+    main()
