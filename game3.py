@@ -1,8 +1,8 @@
 import msvcrt
-# import os
 import random
 import sys
 import time
+# import os
 
 total_levels = 3 # total lvls
 
@@ -21,7 +21,7 @@ pools = {
 
 interval = 0.05 # how often countdown redraws
 
-quit = object() # marker meaning "player pressed ctrl+c"  (NEW)
+quit = object() # qutting game via ctrl c
 
 
 def calculate_score_gain(time_remaining: float, time_limit: float, level: int) -> int:
@@ -47,11 +47,9 @@ def flush_keyboard_buffer() -> None: # discard players who typed input too early
         msvcrt.getwch()
 
 
-def wait_for_key(message: str) -> bool:
+def wait_for_key(message: str) -> bool: # pauses the game untill player press any key
     print(message)
     ch = msvcrt.getwch()
-    if ch in ("\x00", "\xe0"): # special keys send 2 chars swallow the 2nd
-        msvcrt.getwch()
     if ch == "\x03":
         return False
     return True
@@ -91,8 +89,6 @@ def read_input_with_timer(time_limit: float): # read player typing character whi
         elif ch == "\x03": 
             print()
             return quit, 0.0
-        elif ch in ("\x00", "\xe0"):
-            msvcrt.getwch()
         elif ch.isprintable():
             typed += ch
 
@@ -136,9 +132,9 @@ def show_result(success: bool, score: int, amount: int) -> None: # display curre
 
 
 def show_intro() -> bool: # intro (subject to change), returns False if ctrl+c
-    print("=" * 40)
-    print(" typer game")
-    print("=" * 40)
+    print("=====")
+    print("typer game")
+    print("=====")
     print("welcome... to type game... type as fast as you can")
     return wait_for_key("press any key to start") # CHANGED: was input()
 
@@ -186,5 +182,5 @@ def main() -> None:
         print("\n\ngame aborted. bye")
 
 
-#if __name__ == "__main__":
- #   main()
+if __name__ == "__main__":
+    main()
