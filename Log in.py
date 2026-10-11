@@ -53,7 +53,8 @@ def game_hub(name):
         else:
             print("Please choose 1-4.")
 
-def main():
+
+if __name__ == "__main__":
     print("***** ARCANE MERCHANT *****")
     while True:
         choice = show_menu("MAIN MENU", ["Login", "Sign up", "Exit"])
@@ -69,4 +70,4 @@ def main():
         else:
             print("Please choose 1-3.")
 
-main()
+
