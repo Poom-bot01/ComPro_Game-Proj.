@@ -8,7 +8,7 @@ def show_menu(title, options):
 
 def reset_password(name):
     print("\n--- Reset password ---")
-    users[name] = input("New password: ")      # TODO: verify identity first
+    users[name] = input("New password: ")
     print("Password changed. Please log in again.")
 
 def login():
