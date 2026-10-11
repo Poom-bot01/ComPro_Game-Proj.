@@ -180,7 +180,3 @@ def main() -> None:
     score = play_game()
     if score is None:
         print("\n\ngame aborted. bye")
-
-
-if __name__ == "__main__":
-    main()
