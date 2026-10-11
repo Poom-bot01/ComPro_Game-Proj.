@@ -99,7 +99,7 @@ def play_level(level: int): # during lvls, returns none if player quits
 
     print(f"=== progress {level} / {total_levels} ===")
     print(f"time limit: {time_limit:.1f}s\n")
-    if not wait_for_key("press any key if you ready"):
+    if not wait_for_key("press any key"):
         return None
 
     print(f"type this:  >>> {word} <<<\n") # display word
@@ -131,12 +131,12 @@ def show_result(success: bool, score: int, amount: int) -> None: # display curre
     time.sleep(1.5)
 
 
-def show_intro() -> bool: # intro (subject to change), returns False if ctrl+c
+def show_intro() -> bool: # intro (subject to change), returns false if ctrl+c
     print("=====")
     print("typer game")
     print("=====")
     print("welcome... to type game... type as fast as you can")
-    return wait_for_key("press any key to start") # CHANGED: was input()
+    return wait_for_key("press any key")
 
 
 def start_next_stage(score: int) -> int: # called when player clear last lvl
