@@ -179,6 +179,6 @@ def boss_stage(player_data):
 
         # Check if Boss HP exceeds starting HP
 
-if __name__ == "__main__":
-    data = load_player_data()
-    boss_stage(data)
+#if __name__ == "__main__":
+ #   data = load_player_data()
+  #  boss_stage(data)
