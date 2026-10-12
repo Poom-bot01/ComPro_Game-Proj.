@@ -42,11 +42,6 @@ def get_time_limit(level: int) -> float: # return time limit for given lvls
     return level_time[level]
 
 
-def flush_keyboard_buffer() -> None: # discard players who typed input too early
-    while msvcrt.kbhit():
-        msvcrt.getwch()
-
-
 def wait_for_key(message: str) -> bool: # pauses the game untill player press any key
     print(message)
     ch = msvcrt.getwch()
@@ -56,13 +51,12 @@ def wait_for_key(message: str) -> bool: # pauses the game untill player press an
 
 
 def draw_status_line(time_left: float, typed: str) -> None: # player status in game
-    sys.stdout.write(f"\r\033[K  time left: {max(time_left, 0):4.1f}s  |  > {typed}")
+    sys.stdout.write(f"\r\033[time left: {max(time_left, 0):4.1f}s  |  > {typed}")
     sys.stdout.flush()
 
 
 def read_input_with_timer(time_limit: float): # read player typing character while showing live timer
     typed = ""
-    flush_keyboard_buffer()
     start = time.monotonic()
 
     while True:
@@ -99,10 +93,10 @@ def play_level(level: int): # during lvls, returns none if player quits
 
     print(f"=== progress {level} / {total_levels} ===")
     print(f"time limit: {time_limit:.1f}s\n")
-    if not wait_for_key("press any key"):
+    if not wait_for_key("press any key if you ready"):
         return None
 
-    print(f"type this:  >>> {word} <<<\n") # display word
+    print(f"type this:  >>> {word} <<<\n") # display word and tell player to type THERE
 
     typed, time_remaining = read_input_with_timer(time_limit)
 
@@ -131,12 +125,12 @@ def show_result(success: bool, score: int, amount: int) -> None: # display curre
     time.sleep(1.5)
 
 
-def show_intro() -> bool: # intro (subject to change), returns false if ctrl+c
+def show_intro() -> bool: # intro (subject to change), returns False if ctrl+c
     print("=====")
     print("typer game")
     print("=====")
     print("welcome... to type game... type as fast as you can")
-    return wait_for_key("press any key")
+    return wait_for_key("press any key to start") # CHANGED: was input()
 
 
 def start_next_stage(score: int) -> int: # called when player clear last lvl
