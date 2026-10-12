@@ -11,81 +11,51 @@ START_BOSS_HP = 100
 
 Boss_Art = r"""
 
-⠀⠀⠀⠀⠀⠀⣠⣴⣾⣿⠿⠿⠶⣦⣀⠀⠀⠀⠀⠀⣠⣴⣶⣿⣿⠿⠶⢦⣄⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⢠⣾⣿⣿⣿⠁⠀⠀⠀⠈⠹⣧⡀⠀⢠⣾⣿⠿⢿⣿⠁⠀⠀⠀⠈⢷⡄⠀⠀⠀
-⠀⠀⠀⠀⣿⢸⡏⠀⢻⣦⡀⠀⠀⠀⠀⣿⣧⢠⡟⢽⡏⠀⠀⣿⣄⠀⠀⠀⠀⣸⣿⠀⠀⠀
-⠀⠀⠀⢰⡏⠸⣧⣀⣸⡿⢷⣄⡀⣀⣰⣿⣿⢸⡇⠸⣷⣀⣀⣿⠿⢶⣄⣀⣤⣿⣿⠀⠀⠀
-⠀⠀⣠⡶⢿⣄⠉⠻⢿⣦⣴⣿⣿⡿⠟⣱⠏⠘⣧⡀⠙⠻⢿⣿⣤⣴⣿⣿⠿⣫⣿⣄⠀⠀
-⢀⣾⣯⣤⡀⠙⠳⢦⣤⣄⣀⣀⣤⡴⠞⠋⠀⠀⣈⠻⢦⣄⣀⣀⢈⣁⣀⣤⡶⠋⣠⣽⣧⠀
-⣼⢃⡒⡘⢿⣆⠀⠀⠀⠈⠈⠁⠀⠀⠸⢿⣆⣠⡟⠃⠀⠈⠉⠉⠉⠉⠉⠁⢀⣾⠫⣐⢹⡇
-⣿⡡⢌⠱⢚⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⠧⡑⠬⢸⡧
-⠸⣧⢊⠜⢲⡿⠀⠀⠀⠀⠀⢀⣠⡶⠾⠳⣶⣴⠶⠶⠶⣤⣄⠀⠀⠀⠀⠀⢻⡇⡜⣘⣾⠃
-⠀⠙⠷⣮⡿⠃⢠⣄⣀⣀⣴⠟⠁⠀⢠⣟⠋⠛⣷⠀⠀⠀⠙⠻⢦⣤⣀⣀⡈⠻⣶⠟⠁⠀
-⠀⠀⣴⠋⠀⠀⠀⠈⠉⠉⠀⠀⠀⠀⣰⡇⠀⠀⢿⡄⠀⠀⠀⠀⠀⠀⠉⠉⠀⠀⠘⣧⠀⠀
-⠀⣼⠃⠀⠀⠀⠀⠀⠀⠀⢀⣠⡿⠛⠋⠀⠀⠀⠈⠙⠛⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀⢹⣇⠀
-⢰⡏⠀⠀⠀⠘⠳⠶⠖⠛⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠶⠶⠶⠖⠀⠀⠀⠀⢿⡀
-⣼⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇
-⠉⠀⠀⠀⠉⠀⠐⠀⠀⠀⠀⠀⠀⠂⠀⠀⠠⠄⠤⠤⠄⠄⠤⠤⠀⠀⠀⠒⠀⠀⠂⠀⠈⠁
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⠤⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡞⠁⡀⠀⠀⢳⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⡏⠉⠙⡀⠀⢣⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠆⢧⠀⠀⢹⠀⠀⠱⠤⢤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢘⡌⡆⠀⠸⡄⡄⠀⠀⠀⠘⢆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠎⠀⠸⡠⣤⠱⣿⡀⠀⠀⠀⠀⠓⢤⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢱⠀⠀⠀⠙⠺⢳⣸⡄⠀⠐⣄⠀⠀⢰⠋⠁⢀⡽⠦⣀⡀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠎⠀⠀⢆⠀⠀⠀⢏⡇⠀⠀⠈⢦⠀⣙⠀⢰⠃⣤⢄⢠⡍⡷⡀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⢀⡖⠉⠙⠦⡀⠀⠸⡄⠀⠀⠈⠇⠀⠀⠀⠀⠳⡌⠀⠸⣗⢿⠸⣾⣿⡿⡇⠀⠀⠀⠀
+⠀⣀⣤⣒⡤⠴⠋⠀⢱⡄⠀⠹⡀⢠⢷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣄⠀⢻⣆⠀⢉⠈⣁⠐⢄⠀⠀⠀
+⢸⠿⢻⡷⠖⠶⢛⠇⡞⠠⠀⠀⠉⢼⡈⣇⠀⠀⢶⡀⠀⠀⠀⠀⠀⠈⢦⠀⠹⣦⣺⣆⡙⢗⠪⣧⡀⠀
+⠀⠀⠘⠇⠀⠀⢳⡎⠁⠀⢃⣶⠀⢺⠀⠘⡆⠀⠸⣧⠀⠀⠀⠀⠘⣆⠀⠱⢄⠈⠻⣥⣭⣻⣇⠘⢧⡀
+⠀⠀⠀⠀⠀⠀⠘⣧⢸⣇⡌⡿⡇⡏⠀⠀⠘⢦⡀⠳⣷⣄⠀⠀⠀⠙⣷⡀⠀⠹⣕⠒⠒⢝⢾⣀⡀⠁
+⠀⠀⠀⠀⠀⠀⠀⠘⡇⡟⢿⡇⢹⣇⠀⠀⠀⠀⠙⢢⡈⢿⣧⠈⢇⠀⠈⢿⣶⣀⠈⢷⡀⠀⠉⠙⢷⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⣷⠃⠀⠀⠀⠙⠂⠀⠀⠀⠀⠀⠘⣌⣧⡆⠘⣆⠀⠀⠙⢯⡳⣄⠳⡄⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠻⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣼⡜⡀⠈⢷⣤⡀⠀⠻⣌⠣⣹⡀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢳⣳⠑⢤⣀⠉⠻⡶⣄⠘⢧⠘⠇⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠷⣀⠈⠙⠢⡘⣎⠳⣌⢷⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⢢⡀⣌⠻⡆⠘⢿⣷⡀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢧⡹⡳⣿⠀⠀⠙⠻⠷⠄
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠾⢷⣠⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤⠤⠤⠤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡇⠀⠀⠀⠀
 
 """
 
 Boss_Attack_Art = r"""
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡀⠀⠀⠀⠀⠀⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡿⠇⠀⠀⠀⠀⢻⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡇⠀⠀⠀⠀⡸⣞⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠃⠀⠀⠀⢀⣧⢿⣽⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⢴⣿⠆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⣼⣞⡿⣞⡅⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠓⢤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⠀⠀⠀⣰⣟⢾⣽⢫⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣠⢤⣶⡻⣞⣿⣺⢯⣽⣳⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⢠⣄⡀⠀⠀⠀⠀⠙⢦⡀⠀⠀⠀⠀⣀⣠⣤⣿⣽⣻⢾⣽⣷⣾⣽⣻⣞⣷⣳⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠈⢻⣿⣶⣄⡀⠀⠀⠀⣉⣲⣴⢶⣞⡿⣽⣞⡷⣯⢿⡽⣞⣿⠟⠋⠁⠉⠈⠳⣟⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⢶⣾⣿⡽⣯⣟⡾⣽⡷⣯⣟⡽⡾⣽⡯⠁⠀⠀⠀⠀⠀⠀⢮⣭⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⢞⣿⣿⢯⡿⣿⣯⣟⣷⣯⢿⣳⣟⡷⣽⣼⣻⣽⠀⠀⠀⠀⠀⠀⠀⢀⣼⡯⡗⠋⠤⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢾⣿⣿⣯⣽⣾⣿⣾⣗⡿⣯⡷⣯⣟⡷⣞⣼⣿⣀⠀⠀⠀⠀⢀⣠⡿⣏⡗⠈⠐⠈⠅⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣼⠛⠏⠉⠉⠽⢟⢿⣿⣿⣿⣿⣷⣻⢾⡽⣞⡷⠄⡹⣶⢿⣻⢿⣻⡽⢯⣼⢦⠶⠁⠈⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣯⠇⠀⠀⠀⠀⠀⠁⣽⣿⣿⣿⣷⣯⣿⣽⣛⡦⠀⠀⢩⣿⣹⢯⣷⢻⣟⠺⢣⡖⣘⠤⠓⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⣿⡃⠁⠀⠀⠀⢀⣤⣾⣟⢿⣻⣿⣿⣟⡾⣽⡳⠄⠎⢳⣯⢯⣟⡾⢯⣞⣯⣓⠉⢀⠀⠀⡄⢢⡀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣷⣷⣶⣳⣶⣺⣿⣿⣳⢯⣟⣿⣿⣳⢯⠛⠅⠃⠀⠀⣴⣿⡿⣬⢶⠾⠙⣊⣥⠾⡒⠊⢁⢠⠣⣌⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢺⡽⣾⡽⣯⣟⣿⡿⣯⣿⣿⣾⢿⣿⠳⢏⣈⢠⠀⠀⣰⢿⡿⣽⣉⡶⠌⠋⠉⣀⡀⠁⠀⠀⠀⣘⡐⣂⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣽⣳⣟⣳⣟⣾⣽⣿⣿⣿⣿⣿⣦⣜⡻⡽⠆⠧⣴⡟⣯⢟⡳⣭⠲⠄⠐⠀⠀⠀⠈⠁⠉⠑⢊⡕⢃⠄⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣿⣾⣿⣯⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣾⢧⠀⠹⠾⡵⡞⡽⢢⣃⠐⠀⠀⠄⡐⠀⠀⠀⡘⢦⠘⣌⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠹⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢯⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠒⡈⠀⡀⠄⡑⠢⣉⠴⣈⣆
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢯⣏⡴⣶⣵⣢⢤⢠⡀⡄⢠⠐⡰⢌⡱⠀⡁⡀⠆⡥⠆⡥⣛⡽⣾
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠔⠉⠀⠀⢽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣼⣻⢷⣯⡽⣞⣷⣻⡼⣡⢋⡔⠣⠜⡐⢐⠠⡓⣤⣙⣲⣽⣻⢷
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡿⣽⣞⣷⣻⡴⣣⢜⡱⣊⡕⣊⠠⡙⡰⣭⢷⣯⣿⢿
-
+⠀⠀⣠⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⢠⢴⣿⣿⠟⠒⠂⠀⠀⠀⠀⠀⠀⢀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀
+⠀⢸⠋⠘⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⣧⠀⠀⠀⠀⠀⢰⠒⢺⣿⣧⡀
+⠀⣿⠀⠀⣇⠀⠀⠀⠀⠀⠀⢀⣿⠛⠍⠹⢻⣇⠀⠀⠀⠀⠀⠀⠈⠛⠛⠃
+⠀⣿⡆⠀⢻⣿⣶⣦⣤⣤⣤⣼⣿⡄⠀⠀⣸⣿⣤⣤⣤⣀⠀⠀⠀⡇⠀⠀
+⢀⣿⠇⠀⠸⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⡿⣧⠰⡇
+⢸⡇⢰⣼⡀⠋⢻⣸⣿⣿⣿⣿⣿⡇⠀⠀⢸⣿⣿⣿⣿⢹⡟⣏⡇⠀⢠⣷
+⠘⡗⢸⣿⣷⠀⠀⠞⡿⢹⣷⢻⣿⠀⠀⠀⠈⣻⢺⣿⣏⡄⠁⡇⠀⢀⣸⡇
+⠀⠧⢸⡿⣿⠀⠀⠀⠁⡾⢻⠸⣿⡄⠀⠀⠀⡟⡾⡏⢹⠇⠀⢠⠇⢼⡟⠁
+⠀⠀⠀⢷⢹⠀⠀⠀⠀⠁⣾⢺⣿⠇⠀⠀⢸⡍⡁⡇⣿⣲⠀⢸⠀⡏⠀⠀
+⠀⠀⠀⢸⠆⠃⠀⠀⢸⣸⣽⡈⢿⣆⠀⠀⢰⡧⡿⢿⢹⡿⠐⠻⡴⠁⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠈⢻⣿⣿⠀⣿⠀⠀⠀⣷⣇⣸⠚⡇⠀⢸⠁⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⠘⡏⠀⠀⠀⣿⣯⣟⡆⠁⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⢿⠀⠱⠀⠀⠀⣼⣿⠟⡇⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠟⡆⠀⠀⠀⢀⡟⢇⠀⡇⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢸⠀⠀⠀⣾⢁⡇⢸⠁⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠀⠀⡟⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⠃⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 """
-
-
-PLAYER_FILE = "player_data.txt"
-
-
-def load_player_data(path=PLAYER_FILE):
-    """load player data from txt file (key=value per line)
-    Example of player_data.txt:
-        name=Player1
-        score_total=0
-        death_count=0
-    """
-    data = {"name": "Player1", "score_total": 0, "death_count": 0}
-    if not os.path.exists(path):
-        return data
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if "=" not in line:
-                continue
-            key, value = line.split("=", 1)
-            key, value = key.strip(), value.strip()
-            data[key] = int(value) if key in ("score_total", "death_count") else value
-    return data
-
-
-def save_player_data(player_data, path=PLAYER_FILE):
-    """Write player data to txt file (one line per key=value)"""
-    with open(path, "w", encoding="utf-8") as f:
-        for key, value in player_data.items():
-            f.write(f"{key}={value}\n")
 
 
 def login_page():
@@ -126,10 +96,14 @@ def boss_stage(player_data):
             return False
 
         # ----- Player Turn -----
-        print("\n--- Player's Turn ---")
-        print(f" Boss HP: {boss_hp}")
-        print(f"\nHP: {player_hp} | Mana: {player_mana} ")
-        print("[1] Attack (Mana 1)  [2] Heavy Attack (Mana 3)  [3] Heal (Mana 5)")
+        print("\n####--- Player's Turn ---####")
+        print(f" ---Boss HP: {boss_hp}---")
+        print(f"\nName: {player_name} | HP: {player_hp} | Mana: {player_mana} ")
+        print("----Choose Your Action!!----")
+        print("Choice [1-3]")
+        print("[1] Attack (Mana 1) ")
+        print("[2] Heavy Attack (Mana 3)")
+        print("[3] Heal (Mana 5)")
 
         while True:  # Loop until valid choice and sufficient mana
             choice = input("Choose Your Action: ").strip()
@@ -178,29 +152,30 @@ def boss_stage(player_data):
 
         # ----- Boss Turn (Boss_Tactical: Random) -----
         time.sleep(1)
-        print("\n--- Boss's Turn ---")
-        print(Boss_Art)
-        time.sleep(0.5)
+        print("\n###--- Boss's Turn ---###")
         
         print(Boss_Attack_Art)
         time.sleep(0.5)
 
-        boss_action = random.choice(["attack", "heavy_attack", "heal"])
+        boss_options = ["attack", "heavy_attack"]
+            if boss_hp < 50:
+                boss_options.append("heal")
+            boss_action = random.choice(boss_options)
 
-        if boss_action == "attack":
-            print("[Action] Boss chose: Attack")
-            player_hp -= 5
-            print(f"[Result] You lost 5 HP (Remaining: {player_hp})")
+            if boss_action == "attack":
+                print("[Action] Boss chose: Attack")
+                player_hp -= 5
+                print(f"[Result] You lost 5 HP (Remaining: {player_hp})")
 
-        elif boss_action == "heavy_attack":
-            print("[Action] Boss chose: Heavy Attack")
-            player_hp -= 10
-            print(f"[Result] You lost 10 HP (Remaining: {player_hp})")
+            elif boss_action == "heavy_attack":
+                print("[Action] Boss chose: Heavy Attack")
+                player_hp -= 10
+                print(f"[Result] You lost 10 HP (Remaining: {player_hp})")
 
-        else:
-            print("[Action] Boss chose: Heal")
-            boss_hp += 20
-            print(f"[Result] Boss healed 20 HP (Remaining: {boss_hp})")
+            else:
+                print("[Action] Boss chose: Heal")
+                boss_hp += 20
+                print(f"[Result] Boss healed 20 HP (Remaining: {boss_hp})")
 
         # Check if Boss HP exceeds starting HP
 
