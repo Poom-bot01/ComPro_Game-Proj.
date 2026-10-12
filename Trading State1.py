@@ -1,7 +1,7 @@
 # SHOW PLAYER STATUS
 with open("Player Starting Information.txt") as fin:
     gold = int(fin.readline().split("=")[1].strip())
-    xp = int(fin.readline().split("=")[1].strip())
+    hp = int(fin.readline().split("=")[1].strip())
 
 def show_status():
     print()
@@ -9,7 +9,7 @@ def show_status():
     print("|             TRADING STAGE              |")
     print("==========================================")
     print(f"| GOLD   : {gold} G                         |")
-    print(f"| XP     : {xp}                            |")
+    print(f"| HP     : {hp}                            |")
     print("==========================================")
 
 # SHOW SHOP
@@ -72,10 +72,10 @@ if __name__ == "__main__":
 
                         if gold >= 120:
                             gold = gold - 120
-                            xp = xp * 2
+                            hp = hp * 2
                             purchase += 1
                             print("Item bought!")
-                            print(f"Your XP have been increased to {xp}.")
+                            print(f"Your HP have been increased to {hp}.")
                             print(f"Gold : {gold} G")
 
                         else:
@@ -92,12 +92,12 @@ if __name__ == "__main__":
 
                 if gold >= 120:
                     gold = gold - 120
-                    xp = xp * 2
+                    hp = hp * 2
                     purchase += 1
 
                     print("You bought the item blindly.")
-                    print("EFFECT: Double XP")
-                    print(f"Your XP have been increased to {xp}.")
+                    print("EFFECT: Double HP")
+                    print(f"Your HP have been increased to {hp}.")
                     print(f"Gold : {gold} G")
 
                 else:
@@ -136,11 +136,11 @@ if __name__ == "__main__":
 
                         if gold >= 200:
                             gold = gold - 200
-                            xp = 0
+                            hp = 0
                             purchase += 1
 
                             print("You bought the cursed crown.")
-                            print(f"You just have {xp} XP because the curse removed all your XP.")
+                            print(f"You just have {hp} HP because the curse removed all your HP.")
                             print(f"Gold : {gold} G")
 
                         else:
@@ -156,12 +156,12 @@ if __name__ == "__main__":
 
                 if gold >= 200:
                     gold = gold - 200
-                    xp = 0
+                    hp = 0
                     purchase += 1
 
                     print("You bought the item blindly.")
                     print("You bought the cursed crown.")
-                    print(f"You just have {xp} XP because the curse removed all your XP.")
+                    print(f"You just have {hp} HP because the curse removed all your HP.")
                     print(f"Gold : {gold} G")
 
                 else:
@@ -191,7 +191,7 @@ if __name__ == "__main__":
     
                     print()
                     print("APPRAISAL COMPLETE")
-                    print("EFFECT: -30 XP")
+                    print("EFFECT: -30 HP")
                     print(f"Gold : {gold} G")
     
                     buy = input("Buy item? (Y/N): ").lower()
@@ -200,15 +200,15 @@ if __name__ == "__main__":
     
                         if gold >= 180:
                             gold = gold - 180
-                            xp = xp - 30
+                            hp = hp - 30
                             purchase += 1
     
-                            if xp < 0:
-                                xp = 0
+                            if hp < 0:
+                                hp = 0
     
                             print("Item bought!")
-                            print("XP decreased by 30.")
-                            print(f"Now, your XP is {xp}.")
+                            print("HP decreased by 30.")
+                            print(f"Now, your HP is {hp}.")
                             print(f"Gold : {gold} G")
     
                         else:
@@ -224,15 +224,15 @@ if __name__ == "__main__":
     
                 if gold >= 180:
                     gold = gold - 180
-                    xp = xp - 30
+                    hp = hp - 30
                     purchase += 1
     
-                    if xp < 0:
-                        xp = 0
+                    if hp < 0:
+                        hp = 0
     
                     print("You bought the item blindly.")
-                    print("XP decreased by 30.")
-                    print(f"Now, your XP is {xp}.")
+                    print("HP decreased by 30.")
+                    print(f"Now, your HP is {hp}.")
                     print(f"Gold : {gold} G")
     
                 else:
@@ -271,12 +271,12 @@ if __name__ == "__main__":
     
                         if gold >= 150:
                             gold = gold - 150
-                            xp = xp + 40
+                            hp = hp + 40
                             purchase += 1
     
                             print("Item bought!")
-                            print("XP increased by 40.")
-                            print(f"Your XP have raised to {xp}.")
+                            print("HP increased by 40.")
+                            print(f"Your HP have raised to {hp}.")
                             print(f"Gold : {gold} G")
     
                         else:
@@ -292,12 +292,12 @@ if __name__ == "__main__":
     
                 if gold >= 150:
                     gold = gold - 150
-                    xp = xp + 40
+                    hp = hp + 40
                     purchase += 1
     
                     print("You bought the item blindly.")
-                    print("XP increased by 40.")
-                    print(f"Your XP have raised to {xp}.")
+                    print("HP increased by 40.")
+                    print(f"Your HP have raised to {hp}.")
                     print(f"Gold : {gold} G")
     
                 else:
@@ -323,21 +323,21 @@ if __name__ == "__main__":
 
         # CHECK GAME STATUS
 
-        if xp <= 0:
+        if hp <= 0:
 
             print()
             print("==========================================")
             print("|                GAME OVER               |")
             print("==========================================")
-            print("Your XP reached 0.")
+            print("Your HP reached 0.")
 
 
-        if xp >= 100:
+        if hp >= 100:
 
             print()
             print("==========================================")
             print("|             STAGE COMPLETE             |")
             print("==========================================")
-            print("You reached 100 XP!")
+            print("You reached 100 HP!")
             print("Congratulations!")
         
