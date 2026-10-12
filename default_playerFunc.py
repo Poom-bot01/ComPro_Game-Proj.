@@ -13,5 +13,5 @@ def new_player():
 
 def fill_defaults(data):
     player = new_player()
-    player.update(data)  # ค่าที่เซฟไว้ทับค่าเริ่มต้น
+    player.update(data)
     return player
