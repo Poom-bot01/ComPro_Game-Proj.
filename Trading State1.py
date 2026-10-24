@@ -19,7 +19,23 @@ def show_status():
 # SHOW SHOP
 
 def show_shop():
-    print()
+    #read the flie from Itemlist.txt
+    # flie Item_alreadyshow.txt
+    # Item_name , Price , 0 , 10 , 5 , 60 , clue_item (line.split(,))
+    #random from Itemlists.txt
+    # check is it in Item_alreadyshow.txt flie 
+    # when Item_name , price , Gold , HP , Mana , ATK , clue_item 
+
+    #print()
+   #print("============== BAZAAR WARES ==============")
+    #print("| [1] {Item_Name}   - {price} G     |")
+    #print("| [2] Crown of Fallen King   - 200 G     |")
+    #print("| [3] Amulet of Endless Void - 180 G     |")
+    #print("| [4] Rune-Carved Dagger     - 150 G     |")
+    #print("==========================================")
+    #print()
+
+
     print("============== BAZAAR WARES ==============")
     print("| [1] Ironclad Breastplate   - 120 G     |")
     print("| [2] Crown of Fallen King   - 200 G     |")
