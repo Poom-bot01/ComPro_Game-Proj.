@@ -2,6 +2,8 @@
 with open("Player Starting Information.txt") as fin:
     gold = int(fin.readline().split("=")[1].strip())
     hp = int(fin.readline().split("=")[1].strip())
+    mana = int(fin.readline().split("=")[1].strip())
+    attack = int(fin.readline().split("=")[1].strip())
 
 def show_status():
     print()
@@ -10,6 +12,8 @@ def show_status():
     print("==========================================")
     print(f"| GOLD   : {gold} G                         |")
     print(f"| HP     : {hp}                            |")
+    print(f"| Mana   : {mana}                            |")
+    print(f"| Attack : {attack}                            |")
     print("==========================================")
 
 # SHOW SHOP
@@ -63,7 +67,7 @@ if __name__ == "__main__":
 
                     print()
                     print("APPRAISAL COMPLETE")
-                    print("EFFECT: Double XP")
+                    print("EFFECT: Double HP, +20 Attack")
                     print(f"Gold : {gold} G")
 
                     buy = input("Buy item? (Y/N): ").lower()
@@ -73,9 +77,11 @@ if __name__ == "__main__":
                         if gold >= 120:
                             gold = gold - 120
                             hp = hp * 2
+                            attack = attack + 20
                             purchase += 1
                             print("Item bought!")
                             print(f"Your HP have been increased to {hp}.")
+                            print(f"Your Attack have been increased to {attack}.")
                             print(f"Gold : {gold} G")
 
                         else:
@@ -93,11 +99,13 @@ if __name__ == "__main__":
                 if gold >= 120:
                     gold = gold - 120
                     hp = hp * 2
+                    attack = attack + 20
                     purchase += 1
 
                     print("You bought the item blindly.")
-                    print("EFFECT: Double HP")
+                    print("EFFECT: Double HP, +20 Attack")
                     print(f"Your HP have been increased to {hp}.")
+                    print(f"Your Attack have been increased to {attack}.")
                     print(f"Gold : {gold} G")
 
                 else:
@@ -191,7 +199,7 @@ if __name__ == "__main__":
     
                     print()
                     print("APPRAISAL COMPLETE")
-                    print("EFFECT: -30 HP")
+                    print("EFFECT: -30 HP, +15 Mana")
                     print(f"Gold : {gold} G")
     
                     buy = input("Buy item? (Y/N): ").lower()
@@ -201,14 +209,16 @@ if __name__ == "__main__":
                         if gold >= 180:
                             gold = gold - 180
                             hp = hp - 30
+                            mana = mana + 15
                             purchase += 1
     
                             if hp < 0:
                                 hp = 0
     
                             print("Item bought!")
-                            print("HP decreased by 30.")
+                            print("HP decreased by 30. Mana increased by 15.")
                             print(f"Now, your HP is {hp}.")
+                            print(f"Now, your Mana is {mana}.")
                             print(f"Gold : {gold} G")
     
                         else:
@@ -225,14 +235,16 @@ if __name__ == "__main__":
                 if gold >= 180:
                     gold = gold - 180
                     hp = hp - 30
+                    mana = mana + 15
                     purchase += 1
     
                     if hp < 0:
                         hp = 0
     
                     print("You bought the item blindly.")
-                    print("HP decreased by 30.")
+                    print("HP decreased by 30. Mana increased by 15.")
                     print(f"Now, your HP is {hp}.")
+                    print(f"Now, your Mana is {mana}.")
                     print(f"Gold : {gold} G")
     
                 else:
@@ -262,7 +274,7 @@ if __name__ == "__main__":
     
                     print()
                     print("APPRAISAL COMPLETE")
-                    print("EFFECT: +40 XP")
+                    print("EFFECT: +40 HP, -10 Attack")
                     print(f"Gold : {gold} G")
     
                     buy = input("Buy item? (Y/N): ").lower()
@@ -272,11 +284,13 @@ if __name__ == "__main__":
                         if gold >= 150:
                             gold = gold - 150
                             hp = hp + 40
+                            attack = attack - 10
                             purchase += 1
     
                             print("Item bought!")
-                            print("HP increased by 40.")
+                            print("HP increased by 40. Attack decreased by 10.")
                             print(f"Your HP have raised to {hp}.")
+                            print(f"Your Attack is now {attack}.")
                             print(f"Gold : {gold} G")
     
                         else:
@@ -293,11 +307,13 @@ if __name__ == "__main__":
                 if gold >= 150:
                     gold = gold - 150
                     hp = hp + 40
+                    attack = attack - 10
                     purchase += 1
     
                     print("You bought the item blindly.")
-                    print("HP increased by 40.")
+                    print("HP increased by 40. Attack decreased by 10.")
                     print(f"Your HP have raised to {hp}.")
+                    print(f"Your Attack is now {attack}.")
                     print(f"Gold : {gold} G")
     
                 else:
