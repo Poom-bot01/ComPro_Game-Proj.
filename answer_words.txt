@@ -1,0 +1,14 @@
+atlas
+crown
+egypt
+hades
+hydra
+mummy
+oasis
+ruins
+sages
+stone
+sword
+titan
+torch
+tower
