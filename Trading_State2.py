@@ -1,242 +1,217 @@
-import os          # lets us check whether a file exists
-import random      # lets us pick random items
+import os
+import random
+import time
 
-# input/output files
-PLAYER_FILE = "Player Starting Information.txt"   # input file: Gold, HP, Mana, Attack
-ITEM_FILE = "Item_list.txt"                       # input file: the 12 items
-SHOWN_FILE = "Shown Items.txt"                    # output file: items already shown
-APPRAISE_COST = 30                                # gold needed to appraise (same for every item)
-ITEMS_PER_ROUND = 4                               # how many items are shown each round
-STAT_NAMES = ["HP", "Mana", "Attack"]             # the stats an item can change
-BOX_WIDTH = 38                                    # minimum inner width of the boxes
+ITEM_FILE = "Item_list.txt"
+SHOWN_FILE = "Shown Items.txt"
+APPRAISE_COST = 30
+ITEMS_PER_ROUND = 4
+BOX_WIDTH = 66
 
+FALLBACK_ITEMS = []
 
-# file
-def load_player_stats(filename=PLAYER_FILE):
-    names = {"gold": "Gold", "hp": "HP", "mana": "Mana", "attack": "Attack"}  # file key -> dict key
-    player = {}                                        # start with an empty dict
-    with open(filename, "r", encoding="utf-8") as f:   # open the file for reading
-        for line in f:                                 # go through it line by line
-            line = line.strip()                        # remove spaces and the newline
-            if ":" in line:                            # "Gold: 500" style
-                key, value = line.split(":", 1)
-            elif "=" in line:                          # "Gold = 500" style
-                key, value = line.split("=", 1)
-            else:                                      # blank or bad line -> skip
-                continue
-            key = key.strip().lower()                  # "Gold" -> "gold"
-            if key in names:                           # only accept the 4 known keys
-                player[names[key]] = int(value.strip())  # save the number
-    return player                                      # e.g. {"Gold":500,"HP":30,...}
-
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def load_items(filename=ITEM_FILE):
-    items = []                                         # list that will hold every item
-    with open(filename, "r", encoding="utf-8") as f:   # open the item file
-        for line in f:                                 # one item per line
-            line = line.strip()                        # clean the line
-            if not line or line.startswith("#"):       # skip blank lines and the # header
-                continue
-            parts = line.split(",", 5)                 # Name,Price,HP,Mana,Attack,Clue (clue may contain commas)
-            items.append({
-                "name": parts[0].strip(),              # item name
-                "price": int(parts[1]),                # gold price
-                "HP": int(parts[2]),                   # HP change (can be negative)
-                "Mana": int(parts[3]),                 # Mana change
-                "Attack": int(parts[4]),               # Attack change
-                "clue": parts[5].strip() if len(parts) > 5 else "",  # clue text shown after choosing
-            })
-    return items                                       # the full list of items
+    if not os.path.exists(filename):
+        return FALLBACK_ITEMS
 
+    items = []
+    with open(filename, "r", encoding="utf-8") as fin:
+        for line in fin:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split(",", 5)
+            if len(parts) >= 5:
+                hp_val = int(parts[2].strip())
+                items.append({
+                    "name": parts[0].strip(),
+                    "price": int(parts[1].strip()),
+                    "HP": hp_val,
+                    "Mana": int(parts[3].strip()),
+                    "Attack": int(parts[4].strip()),
+                    "clue": parts[5].strip() if len(parts) > 5 else "(No clue provided)",
+                    "cursed": hp_val < 0
+                })
+    return items if items else FALLBACK_ITEMS
 
 def get_shown_names(filename=SHOWN_FILE):
-    shown = set()                                      # empty set
-    if not os.path.exists(filename):                   # no file yet = nothing shown yet
+    """Reads previously displayed item names from Shown Items.txt."""
+    shown = set()
+    if not os.path.exists(filename):
         return shown
-    with open(filename, "r", encoding="utf-8") as f:   # open the output file
-        for line in f:                                 # lines look like "1|Healing Herb"
-            line = line.strip()                        # clean the line
-            if "|" in line:                            # ignore blank lines
-                shown.add(line.split("|", 1)[1])       # keep only the name part
-    return shown                                       # e.g. {"Healing Herb", ...}
-
+    with open(filename, "r", encoding="utf-8") as fin:
+        for line in fin:
+            line = line.strip()
+            if "|" in line:
+                shown.add(line.split("|", 1)[1])
+    return shown
 
 def save_shown_items(round_number, items, filename=SHOWN_FILE):
-    with open(filename, "a", encoding="utf-8") as f:   # "a" = append, keeps old rounds
-        for item in items:                             # each shown item
-            f.write(f"{round_number}|{item['name']}\n")  # write "round|name"
-
+    with open(filename, "a", encoding="utf-8") as fout:
+        for item in items:
+            fout.write(f"{round_number}|{item['name']}\n")
 
 def reset_market(filename=SHOWN_FILE):
-    if os.path.exists(filename):                       # only delete if it exists
-        os.remove(filename)                            # remove the old record
+    if os.path.exists(filename):
+        os.remove(filename)
 
-
-# display
 def print_box(lines, border="=", title=None):
-    width = max([BOX_WIDTH] + [len(line) for line in lines])  # inner width
-    print(border * (width + 4))                        # top border
-    if title:                                          # optional centered title
+    width = max([BOX_WIDTH] + [len(line) for line in lines])
+    print(border * (width + 4))
+    if title:
         print(f"| {title.center(width)} |")
-    for line in lines:                                 # each text line
+        print(border * (width + 4))
+    for line in lines:
         print(f"| {line.ljust(width)} |")
-    print(border * (width + 4))                        # bottom border
-
-
-def show_status(player):
-    print()
-    print_box([
-        f"GOLD   : {player['Gold']} G",
-        f"HP     : {player['HP']}",
-        f"Mana   : {player['Mana']}",
-        f"Attack : {player['Attack']}",
-    ], "=", title="TRADING STAGE")
-
-
-def show_items(items):
-    width = max(len(item["name"]) for item in items)   # to line the prices up
-    lines = [f"[{n}] {item['name'].ljust(width)} - {item['price']} G"
-             for n, item in enumerate(items, start=1)]  # numbering starts at 1
-    print()
-    print_box(lines, "=", title="BAZAAR WARES")
-
-
-def show_selected(item):
-    clue = item["clue"] if item["clue"] else "(none)"  # no clue written in the file
-    print()
-    print_box([
-        f"SELECTED: {item['name']}",
-        f"CLUE: {clue}",
-        "REVEALED STATS: ???",
-    ], "*")
-
+    print(border * (width + 4))
 
 def format_effect(item):
-    parts = [f"{item[s]:+} {s}" for s in STAT_NAMES if item[s] != 0]  # only changed stats
-    return ", ".join(parts) if parts else "No effect"  # nothing changes -> "No effect"
+    parts = []
+    if item["HP"] != 0: parts.append(f"{item['HP']:+} HP")
+    if item["Mana"] != 0: parts.append(f"{item['Mana']:+} Mana")
+    if item["Attack"] != 0: parts.append(f"{item['Attack']:+} ATK")
+    return ", ".join(parts) if parts else "No stat changes"
 
+def run_shop(player, visit_number):
+    if visit_number == 1:
+        reset_market()
 
-# round
-def pick_round_items(round_number):
-    all_items = load_items()                           # all 12 items
-    shown = get_shown_names()                          # names already shown
-    available = [i for i in all_items if i["name"] not in shown]  # only the unseen ones
-    count = min(ITEMS_PER_ROUND, len(available))       # safety: never ask for more than exist
-    chosen = random.sample(available, count)           # random pick, no repeats
-    save_shown_items(round_number, chosen)             # remember them in the output file
-    return chosen                                      # list of item dicts
+    all_items = load_items()
+    shown = get_shown_names()
 
+    available = [
+        i for i in all_items 
+        if i["name"] not in shown and i["name"] not in player.inventory_list
+    ]
 
-def ask_yes_no(question):
-    while True:                                        # repeat until a valid answer
-        answer = input(question).strip().lower()       # read and clean the answer
-        if answer == "y":                              # yes
-            return True
-        if answer == "n":                              # no
-            return False
-        print("Please type Y or N.")                   # anything else -> ask again
+    if not available:
+        available = [i for i in all_items if i["name"] not in player.inventory_list]
 
+    if not available:
+        print("+----------------------------------------------------------+")
+        print("| [!] THE BAZAAR HAS NO NEW ITEMS LEFT TO OFFER!           |")
+        print("+----------------------------------------------------------+")
+        time.sleep(1.5)
+        return
 
-def appraise_item(player, item):
-    if player["Gold"] < APPRAISE_COST:                 # can the player afford it?
-        print("Not enough gold for appraisal.")        # no -> tell the player
-        print("Try something new or quit.")            # hint, as in the flowchart
-        return False                                   # nothing happened
-    player["Gold"] -= APPRAISE_COST                    # yes -> pay the fee
-    print()
-    print("APPRAISAL COMPLETE")                        # header
-    print(f"EFFECT: {format_effect(item)}")            # e.g. "EFFECT: -30 HP, +15 Mana"
-    print(f"Gold : {player['Gold']} G")                # gold left
-    return True                                        # appraisal done
+    count = min(ITEMS_PER_ROUND, len(available))
+    wares = random.sample(available, count)
+    save_shown_items(visit_number, wares)
 
+    while True:
+        clear_screen()
+        print("+====================================================================+")
+        print(f"|                      TRADING BAZAAR                               |") 
+        print("+====================================================================+")
 
-def buy_item(player, item, blind):
-    if player["Gold"] < item["price"]:                 # can the player afford it?
-        print("Not enough gold.")                      # no -> tell the player
-        print("Try something new or quit.")            # hint, as in the flowchart
-        return False                                   # nothing bought
-    player["Gold"] -= item["price"]                    # yes -> pay the price
-    for stat in STAT_NAMES:                            # HP, Mana, Attack in turn
-        player[stat] = max(0, player[stat] + item[stat])  # add (or subtract); never below 0
-    print()
-    print("You bought the item blindly." if blind else "Item bought!")
-    print(f"EFFECT: {format_effect(item)}")            # what the item did
-    for stat in STAT_NAMES:                            # show the new value of changed stats
-        if item[stat] != 0:
-            print(f"Your {stat} is now {player[stat]}.")
-    print(f"Gold : {player['Gold']} G")                # gold left
-    return True                                        # purchase done
+        player.display_stats()
 
+        item_lines = [
+            f"[{n}] {item['name'].ljust(24)} - {item['price']:>3}$ | {item['clue']:<27}"
+            for n, item in enumerate(wares, start=1)
+        ]
+        print_box(item_lines, "=", title="BAZAAR WARES")
+        print("| [ Q ] SKIP SHOP & PROCEED TO NEXT STAGE                            |")
+        print("+--------------------------------------------------------------------+")
 
-def choose_action(player, item):
-    show_selected(item)                                # name, clue, stats hidden
-    print()
-    print(f"[B] Buy Blind ({item['price']}G)")         # option b
-    print(f"[A] Appraise ({APPRAISE_COST}G)")          # option a
+        choice = input("\n>>> COMMAND (1-4 / Q) > ").strip().lower()
 
-    while True:                                        # wrong action -> ask the action again
-        action = input("ACTION > ").strip().lower()    # read the action
+        if choice == "q":
+            print("+----------------------------------------------------------+")
+            print("| [>] SKIPPING SHOP... ADVANCING TO NEXT STAGE             |")
+            print("+----------------------------------------------------------+")
+            time.sleep(1.5)
+            clear_screen()
+            return
 
-        if action == "a":                              # APPRAISE
-            if not appraise_item(player, item):        # not enough gold for the fee
-                return False                           # back to choosing an item
-            if ask_yes_no("Buy item? (Y/N): "):        # Y -> check price and buy
-                return buy_item(player, item, blind=False)  # False if too poor
-            return False                               # N -> back to choosing an item
+        if choice.isdigit() and 1 <= int(choice) <= len(wares):
+            item = wares[int(choice) - 1]
 
-        if action == "b":                              # BUY BLIND
-            return buy_item(player, item, blind=True)  # check price and buy (False if too poor)
+            clear_screen()
+            print_box([
+                f"ITEM     : {item['name']}",
+                f"PRICE    : {item['price']}$",
+                f"LORE CLUE: {item['clue']}",
+                "STATS    : ???"
+            ], "*", title="SELECTED ITEM")
 
-        print("Invalid action. Type A or B.")          # anything else -> ask again
+            print("\n+----------------------------------------------------------+")
+            print("| [B] BUY NOW (BLIND PURCHASE)                              |")
+            print(f"| [A] APPRAISE ({APPRAISE_COST}$ FEE TO REVEAL EXACT STATS)        |")
+            print("| [C] CANCEL / GO BACK                                      |")
+            print("+----------------------------------------------------------+")
 
+            sub_choice = input(">>> ACTION (B/A/C) > ").strip().lower()
 
-def check_game_over(player):
-    if player["HP"] <= 0:                              # no HP left
-        print()
-        print_box(["Your HP reached 0."], "=", title="GAME OVER")
-        return True
-    return False
+            if sub_choice == "a":
+                if player.gold_balance < APPRAISE_COST:
+                    print("| [!] INSUFFICIENT GOLD FOR APPRAISAL.")
+                    time.sleep(1.5)
+                    continue
+                else:
+                    player.gold_balance -= APPRAISE_COST
+                    print("+----------------------------------------------------------+")
+                    print("| APPRAISAL RESULT:                                        |")
+                    print(f"| • EFFECT: {format_effect(item):<46} |")
+                    print(f"| • GOLD REMAINING: {player.gold_balance:<38}$ |")
+                    print("+----------------------------------------------------------+")
+                    
+                    confirm = input("\n>>> BUY ITEM NOW? (Y/N) > ").strip().lower()
+                    if confirm != "y":
+                        print("+----------------------------------------------------------+")
+                        print("| [>] PURCHASE CANCELED. RETURNING TO BAZAAR...            |")
+                        print("+----------------------------------------------------------+")
+                        time.sleep(1.2)
+                        continue
 
+            elif sub_choice == "c":
+                print("+----------------------------------------------------------+")
+                print("| [>] RETURNING TO BAZAAR...                               |")
+                print("+----------------------------------------------------------+")
+                time.sleep(1.0)
+                continue
 
-def play_market_round(player, round_number):
-    items = pick_round_items(round_number)             # pick 4 random unseen items and save them
-    if not items:                                      # every item was already shown
-        print("\nThe market has nothing left to sell.")
-        return player                                  # nothing to do, leave the market
-    show_status(player)                                # Gold, HP, Mana, Attack
-    show_items(items)                                  # Print Market (printed once)
-    print()
-    print(f"[1-{len(items)}] Select Item")             # instructions
-    print("[Q] Quit")
+            elif sub_choice == "b":
+                confirm = input("\n>>> CONFIRM BLIND PURCHASE? (Y/N) > ").strip().lower()
+                if confirm != "y":
+                    print("+----------------------------------------------------------+")
+                    print("| [>] PURCHASE DECLINED. RETURNING TO BAZAAR...            |")
+                    print("+----------------------------------------------------------+")
+                    time.sleep(1.2)
+                    continue
 
-    while True:                                        # input stage: repeat until buy or quit
-        choice = input("COMMAND > ").strip().lower()   # read the command
+            # Complete Purchase
+            if player.gold_balance >= item["price"]:
+                player.gold_balance -= item["price"]
+                
+                # Apply Caps: HP <= 50, Mana <= 45, Attack <= 50
+                player.current_hp = min(50, max(1, player.current_hp + item["HP"]))
+                player.mana = min(45, max(0, player.mana + item["Mana"]))
+                player.attack_power = min(50, max(0, player.attack_power + item["Attack"]))
+                player.inventory_list.append(item["name"])
 
-        if choice == "q":                              # player wants to leave
-            print()
-            print("You left the Trading Stage.")
-            return player                              # exit, nothing bought
+                if item["cursed"] or item["HP"] < 0:
+                    player.cursed_status = True
 
-        if not choice.isdigit() or not 1 <= int(choice) <= len(items):
-            print()
-            print("Invalid command.")                  # not 1-4 or Q
-            print(f"Please choose 1-{len(items)} or Q.")
-            continue                                   # back to the input stage
+                clear_screen()
+                print("+----------------------------------------------------------+")
+                print(f"| [+] PURCHASE SUCCESSFUL: {item['name']:<31} |")
+                print("+----------------------------------------------------------+")
+                print(f"| EFFECT: {format_effect(item):<48} |")
+                print(f"| HP [{player.current_hp:2d}/50] | MANA [{player.mana:2d}/45] | ATK [{player.attack_power:2d}/50] | GOLD: {player.gold_balance:<4}$ |")
+                
+                if player.cursed_status:
+                    print("| [!] WARNING: RELIC IS CURSED! DARK ENVELOPMENT...        |")
+                print("+----------------------------------------------------------+")
 
-        item = items[int(choice) - 1]                  # the item the player picked
-        if choose_action(player, item):                # True = bought something
-            check_game_over(player)                    # show GAME OVER if HP is 0
-            return player                              # one purchase per round -> leave the market
-        # False = not enough gold, or said N -> back to the input stage
+                time.sleep(3.0)
+                clear_screen()
+                return
+            else:
+                print("| [!] INSUFFICIENT GOLD TO PURCHASE ITEM.")
+                time.sleep(1.5)
 
-
-# main
-def run_market_2(player):
-    return play_market_round(player, 2)                # picks from the items still unseen
-
-
-# test
-if __name__ == "__main__":                             # runs only when you run this file directly
-    hero = load_player_stats()                         # read the starting stats
-    run_market_2(hero)
-    print("Player now:", hero)
+                
