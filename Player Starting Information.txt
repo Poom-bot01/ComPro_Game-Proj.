@@ -1,2 +1,4 @@
 gold = 500
 xp = 30
+mana = 20
+attack = 30
