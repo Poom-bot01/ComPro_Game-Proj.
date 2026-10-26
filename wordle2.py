@@ -1,27 +1,24 @@
+import os
 import random
 import sys
+import time
 from pathlib import Path
 
-# Game rules.
+
+# Game rules
 word_length = 5
 max_attempts = 6
 first_guess_reward = 9999
 normal_win_reward = 300
 
-# Player status placeholders; replace them when the team data is available.
-player_name = "[PENDING]"
-player_stage = "[PENDING]"
-player_score = "[PENDING]"
-player_health = "[PENDING]"
-player_mana = "[PENDING]"
-player_gold = "[PENDING]"
-player_power = "[PENDING]"
-player_attack = "[PENDING]"
-player_xp = "[PENDING]"
 
-# Use colors only when the game is running in a terminal.
+# Use terminal colors when supported
 use_colors = sys.stdout.isatty()
 
+
+def clear_screen():
+    """Clears the terminal screen across Windows, macOS, and Linux."""
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def colorize(text, marker):
     """Add green or yellow terminal color to a feedback marker."""
@@ -33,35 +30,58 @@ def colorize(text, marker):
         return "\033[33m" + text + "\033[0m"
     return text
 
+def load_answer_words():
+    """Load possible 5-letter answers from file or fallback list."""
+    answer_words_file = Path(__file__).with_name("answer_words.txt")
+    answer_words = []
 
-# Load possible answers from a text file beside this script.
-answer_words_file = Path(__file__).with_name("answer_words.txt")
-answer_words = []
-with open(answer_words_file, "r", encoding="utf-8") as file:
-    for line in file:
-        word = line.strip().lower()
-        if word:
-            answer_words.append(word)
+    if answer_words_file.exists():
+        with open(answer_words_file, "r", encoding="utf-8") as file:
+            for line in file:
+                word = line.strip().lower()
+                if word and len(word) == word_length and word.isascii() and word.isalpha():
+                    answer_words.append(word)
 
-if not answer_words:
-    raise ValueError(f"No answer words found in {answer_words_file}.")
-for word in answer_words:
-    if len(word) != word_length or not word.isascii() or not word.isalpha():
-        raise ValueError(
-            f"Every word in {answer_words_file} must be a 5-letter English word."
-        )
+    if not answer_words:
+        answer_words = list(RUNE_CLUES.keys())
 
+    return answer_words
+
+def load_rune_clues():
+    """Load per-word clues from the rune_clues.txt file."""
+    clues_file = Path(__file__).with_name("rune_clues.txt")
+    clues = {}
+
+    with open(clues_file, "r", encoding="utf-8") as file:
+        for line_number, line in enumerate(file, start=1):
+            line = line.strip()
+            if not line:
+                continue
+
+            word, separator, clue = line.partition("|")
+            word = word.strip().lower()
+            clue = clue.strip()
+            if not separator or not word or not clue:
+                raise ValueError(
+                    f"Invalid clue format in {clues_file.name} at line {line_number}; "
+                    "expected word|clue."
+                )
+            clues[word] = clue
+
+    return clues
 
 def score_guess(secret_word, guess):
-    """Return G for a match, Y for a misplaced letter, and _ for no match."""
+    """Return G for exact match, Y for misplaced letter, and _ for no match."""
     feedback = ["_"] * word_length
     remaining_letters = list(secret_word)
 
+    # Pass 1: Exact matches (Green)
     for index in range(word_length):
         if guess[index] == secret_word[index]:
             feedback[index] = "G"
             remaining_letters.remove(guess[index])
 
+    # Pass 2: Misplaced matches (Yellow)
     for index in range(word_length):
         letter = guess[index]
         if feedback[index] != "G" and letter in remaining_letters:
@@ -70,55 +90,43 @@ def score_guess(secret_word, guess):
 
     return feedback
 
-
-def render_dashboard(guesses, message=""):
-    """Print the player panel, guess grid, and letter-status keyboard."""
-    print()
-    print("=" * 82)
-    print("ANCIENT WORDLE STAGE")
-    print("=" * 82)
-    print(
-        f"PLAYER: {player_name} | STAGE: {player_stage} | "
-        f"SCORE: {player_score}"
-    )
-    print(
-        f"HEALTH: {player_health} | MANA: {player_mana} | GOLD: {player_gold}"
-    )
-    print(f"POWER: {player_power} | ATK: {player_attack} | XP: {player_xp}")
-    print("-" * 82)
-    print(" MONOLITH RUNE GRID")
+def render_dashboard(guesses, player, clue, message=""):
+    """Print the live player panel, clue, guess grid, and ASCII letter-status keyboard."""
+    clear_screen()
+    print("+====================================================================+")
+    print("|                      ANCIENT RUNE WORDLE GATE                      |")
+    print("+====================================================================+")
+    
+    # Live Player Status Display (Mapped to 10-attribute schema)
+    print(f"| PLAYER: {player.name:<12} | STAGE: [{player.current_stage}/6] | HIGH SCORE: {player.high_score:<8} |")
+    print(f"| HEALTH: [{player.current_hp:2d}/50]       | MANA: [{player.mana:2d}/45]    | GOLD: {player.gold_balance:<6}$    |")
+    print(f"| ATK POWER: [{player.attack_power:2d}/50]   | LATEST SCORE: {player.latest_score:<21} |")
+    print("+--------------------------------------------------------------------+")
+    print(f"| RUNE LORE CLUE: \"{clue}\"")
+    print("+--------------------------------------------------------------------+")
+    print("| MONOLITH RUNE GRID                                                 |")
 
     for attempt in range(max_attempts):
         if attempt < len(guesses):
             guess, feedback = guesses[attempt]
             guess_cells = ""
-            result_cells = ""
             for index in range(word_length):
-                letter = guess[index]
+                letter = guess[index] if guess[index] else " "
                 marker = feedback[index]
-                if not letter:
-                    letter = " "
-                if marker == "_":
-                    shown_marker = "-"
-                else:
-                    shown_marker = marker
-                guess_cells += f"[ {letter} ] "
-                result_cells += colorize(f"[{shown_marker}]", marker) + " "
-            print(f" ATTEMPT {attempt + 1}: {guess_cells}  ->  {result_cells}")
+                guess_cells += colorize(f"[ {letter.upper()} ]", marker) + " "
+            print(f"|  ATTEMPT {attempt + 1}: {guess_cells}")
         else:
-            blank_cells = ""
-            for _ in range(word_length):
-                blank_cells += "[   ] "
-            print(f" ATTEMPT {attempt + 1}: {blank_cells}")
+            blank_cells = "[   ] " * word_length
+            print(f"|  ATTEMPT {attempt + 1}: {blank_cells}")
 
-    print("-" * 82)
+    print("+--------------------------------------------------------------------+")
     print(
-        " LEGEND: "
+        "| LEGEND: "
         f"{colorize('[G]', 'G')} Correct spot | "
         f"{colorize('[Y]', 'Y')} Wrong spot | [-] Not in word / invalid"
     )
-    print(" DUPLICATES: Only as many copies as in the answer can be G/Y; extras are [-].")
 
+    # Track letter status
     letter_statuses = {}
     tried_letters = []
     for guess, feedback in guesses:
@@ -137,69 +145,93 @@ def render_dashboard(guesses, message=""):
             elif marker == "Y" and letter_statuses[letter] != "G":
                 letter_statuses[letter] = marker
 
-    available_letters = []
-    for letter in "abcdefghijklmnopqrstuvwxyz":
-        if letter not in tried_letters:
-            available_letters.append(letter)
-
+    available_letters = [l for l in "abcdefghijklmnopqrstuvwxyz" if l not in tried_letters]
     revealed_letters = []
     absent_letters = []
+
     for letter in sorted(letter_statuses):
         marker = letter_statuses[letter]
-        if marker == "G" or marker == "Y":
+        if marker in ["G", "Y"]:
             shown_letter = f"[{letter.upper()}:{marker}]"
             revealed_letters.append(colorize(shown_letter, marker))
         elif marker == "_":
-            absent_letters.append(letter)
+            absent_letters.append(letter.upper())
 
-    print(" RUNE KEYBOARD STATUS")
-    print(f" AVAILABLE: {' '.join(available_letters) if available_letters else '-'}")
-    print(f" FOUND:     {' '.join(revealed_letters) if revealed_letters else '-'}")
-    print(f" DISCARDED: {' '.join(absent_letters) if absent_letters else '-'}")
-    print("-" * 82)
+    print("| RUNE KEYBOARD STATUS                                               |")
+    print(f"| AVAILABLE: {' '.join([l.upper() for l in available_letters]) if available_letters else '-'}")
+    print(f"| FOUND:     {' '.join(revealed_letters) if revealed_letters else '-'}")
+    print(f"| DISCARDED: {' '.join(absent_letters) if absent_letters else '-'}")
+    print("+--------------------------------------------------------------------+")
     if message:
-        print(f" {message}")
+        print(f"| {message}")
 
-
-def play_game():
-    """Run one terminal game from selecting an answer through win or loss."""
+def run_wordle(player):
+    """Executes Stage 2 Wordle using the player profile state."""
+    answer_words = load_answer_words()
+    rune_clues = load_rune_clues()
     secret_word = random.choice(answer_words)
+    clue = rune_clues.get(secret_word, "An ancient 5-letter arcane rune.")
+    
     guesses = []
+    start_time = time.time()
 
     for attempt in range(1, max_attempts + 1):
-        render_dashboard(guesses)
-        guess = input(f"\nAttempt {attempt}/{max_attempts}: ").strip().lower()
+        render_dashboard(guesses, player, clue)
+        guess = input(f"\n>>> Attempt {attempt}/{max_attempts} - Enter 5-letter rune: ").strip().lower()
+
+        # Handle invalid inputs
         if len(guess) != word_length or not guess.isascii() or not guess.isalpha():
-            displayed_guess = []
-            for letter in guess[:word_length].ljust(word_length):
-                if letter.isascii() and letter.isalpha():
-                    displayed_guess.append(letter)
-                else:
-                    displayed_guess.append("")
+            displayed_guess = [c if (c.isascii() and c.isalpha()) else "" for c in guess[:word_length].ljust(word_length)]
             guesses.append((displayed_guess, ["-"] * word_length))
-            message = "Invalid format. This attempt has been used."
+            message = "[!] Invalid format! This attempt has been used."
         else:
             feedback = score_guess(secret_word, guess)
             guesses.append((list(guess), feedback))
+
+            # WINNING CONDITION
             if guess == secret_word:
-                if attempt == 1:
-                    reward = first_guess_reward
-                else:
-                    reward = normal_win_reward
+                elapsed = round(time.time() - start_time, 2)
+
+                reward = first_guess_reward if attempt == 1 else normal_win_reward
+                player.gold_balance += reward
+                player.latest_score += 200
+                player.high_score = max(player.high_score, player.latest_score)
+
                 render_dashboard(
                     guesses,
-                    f"GATE UNLOCKED! Solved in {attempt} guesses."
-                    f"\n REWARD: +{reward:,} COINS (DISPLAY ONLY; NOT SAVED)",
+                    player,
+                    clue,
+                    f"[*] GATE UNLOCKED! Solved in {attempt} guesses ({elapsed}s)."
+                    f"\n | [+] REWARD: +{reward:,} Gold and +200 score!"
                 )
-                return
+                time.sleep(3.5)
+                clear_screen()
+                return True
+
             message = ""
 
-
+        # FAILURE CONDITION
         if attempt == max_attempts:
-            render_dashboard(guesses, f"Attempts FAIL. The word was {secret_word}.")
+            elapsed = round(time.time() - start_time, 2)
+            player.current_hp = max(1, player.current_hp - 10)
+
+            render_dashboard(
+                guesses,
+                player,
+                clue,
+                f"[!] ATTEMPTS EXHAUSTED! Secret rune was [{secret_word.upper()}]."
+                f"\n | [-] Gate backlash deals 10 HP damage!"
+            )
+            time.sleep(3.5)
+            clear_screen()
+            return True
         else:
-            render_dashboard(guesses, message)
+            if message:
+                render_dashboard(guesses, player, clue, message)
 
 
 if __name__ == "__main__":
-    play_game()
+    # Example usage with a default player
+    from character import ArcaneMerchant  # Assuming the ArcaneMerchant class is in this file
+    player = ArcaneMerchant("DefaultPlayer")
+    run_wordle(player)
