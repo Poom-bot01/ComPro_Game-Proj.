@@ -1,6 +1,7 @@
 DEFAULT_PLAYER = {
     "hp": 100,
     "gold": 500,
+    "xp": 0,
     "items": [],
     "stage": 1,
 }
