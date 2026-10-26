@@ -1,14 +1,14 @@
-atlas|A burden-bearing figure whose name later became associated with maps.
-crown|A circle of authority set above the brows.
-egypt|A land shaped by a river's annual gift, remembered in stone.
-hades|A name shared by a ruler below and the realm he governs.
-hydra|A labor of Heracles began with one neck and ended with many.
-mummy|Silence preserved beneath layers of linen.
-oasis|A green interruption in a sea without water.
-ruins|What remains when a city outlives its builders.
-sages|Those whose counsel is valued more than their strength.
-stone|A patient witness to time, shaped into monuments.
-sword|A verdict carried at one's side.
-titan|A race of elder powers challenged by the Olympians.
-torch|A small captured sun passed from hand to hand.
-tower|A vertical landmark built to be seen from afar.
+atlas
+crown
+egypt
+hades
+hydra
+mummy
+oasis
+ruins
+sages
+stone
+sword
+titan
+torch
+tower
