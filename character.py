@@ -4,23 +4,23 @@ class ArcaneMerchant:
         self.name = name  # Username
         
         # 2. Character State
-        self.current_hp = 30  # Current HP
-        self.mana = 10        # Mana
-        self.attack_power = 15 # Attack Power
+        self.current_hp = 30   # Current HP (Max cap: 50)
+        self.mana = 10         # Mana (Max cap: 45)
+        self.attack_power = 15 # Attack Power (Max cap: 50)
         
         # 3. Economy Data
-        self.gold_balance = 500  # Gold Balance
-        self.inventory_list = [] # Inventory List
+        self.gold_balance = 500   # Gold Balance
+        self.inventory_list = []  # Inventory List
         self.cursed_status = False # Cursed Status
         
-        
-        # 5. Progress & Score
-        self.current_stage = 1  # Current Stage [1-6]
-        self.high_score = 0     # High Score
-        self.latest_score = 0    # Latest Run Score
+        # 4. Progress, Stats & Scores
+        self.current_stage = 1 # Current Stage [1-6]
+        self.high_score = 0    # All-Time High Score
+        self.latest_score = 0  # Latest Run Score
+        self.deaths = 0        # Total Deaths Count
 
     def restore_full(self):
-        """Restores player HP to max capacity."""
+        """Restores player HP and Mana to max capacities."""
         self.current_hp = 50
         self.mana = 45
         print("+----------------------------------------------------------+")
@@ -28,16 +28,14 @@ class ArcaneMerchant:
         print("+----------------------------------------------------------+")
 
     def display_stats(self):
+        """Displays status card using clean ASCII box layout with Death Counter."""
         inv = ", ".join(self.inventory_list) if self.inventory_list else "NONE"
         cursed = "YES (CURSED)" if self.cursed_status else "NO"
         print("+====================================================================+")
         print(f"| MERCHANT CARD: {self.name:<22} STAGE: [{self.current_stage}/6]              |")
         print("+--------------------------------------------------------------------+")
-        print(f"| HP: [{self.current_hp:2d}/50] | MANA: [{self.mana:2d}/45] | ATK: [{self.attack_power:2d}/50]")
-        print(f"| GOLD: [{self.gold_balance:4d}$]")
-        print(f"| RELICS: {inv:<58} ")
-        print(f"| CURSED: {cursed:<12} ")
-        print(f"| HIGH SCORE: {self.high_score:<10} | LATEST RUN SCORE: {self.latest_score:<14}")
+        print(f"| HP: [{self.current_hp:2d}/50] | MANA: [{self.mana:2d}/45] | ATK: [{self.attack_power:2d}/50] | GOLD: [{self.gold_balance:4d}$] |")
+        print(f"| RELICS: {inv:<58} |")
+        print(f"| CURSED: {cursed:<12} | TOTAL DEATHS: {self.deaths:<27} |")
+        print(f"| HIGH SCORE: {self.high_score:<10} | LATEST RUN SCORE: {self.latest_score:<14} |")
         print("+====================================================================+")
-
-    
