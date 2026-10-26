@@ -2,7 +2,7 @@ import os          # lets us check whether a file exists
 import random      # lets us pick random items
 
 # input/output files
-PLAYER_FILE = "Player Starting Information.txt"   # input file: Gold, HP, Mana, Attack
+#Usedefault_player file(_PLAYER_FILE = "Player Starting Information.txt"_)   # input file: Gold, HP, Mana, Attack
 ITEM_FILE = "Item_list.txt"                       # input file: the 12 items
 SHOWN_FILE = "Shown Items.txt"                    # output file: items already shown
 APPRAISE_COST = 30                                # gold needed to appraise (same for every item)
