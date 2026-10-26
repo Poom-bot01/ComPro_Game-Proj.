@@ -32,7 +32,7 @@ def main():
         if choice == "1":
             name = login()
             if name:
-                hub()
+                hub(name)
         elif choice == "2":
             sign_up()
         elif choice == "3":
@@ -41,12 +41,6 @@ def main():
         else:
             print("Please choose 1-3")
 
-def password_taken(password, own_name):
-    for other_name in users:                         
-        if other_name != own_name and users[other_name] == password:
-            return True                              
-    return False
-    
 def valid_password(password):
     upper = lower = number = special = False
     for sixseven in password:
@@ -62,7 +56,7 @@ def valid_password(password):
 
 def sign_up():
     while True:
-        name = input("New username (blank to cancel): ")
+        name = input("New username: ")
         if name == "":
             return
         password = input("New password: ")
@@ -77,14 +71,12 @@ def reset_password(name):
     print("--- Reset password ---")
     while True:
         password = input("New password: ")
- 
-        if valid_password(password) == True and password_taken(password, name) == False:
+        if valid_password(password):
             input("[ Reset password ] Press Enter...")
-            users[name] = password       
+            users[name] = password
             print("Password changed. Please log in again.")
             return
-        else:
-            print("Invalid name or password")
+        print("Invalid name or password")
 
 def login():
     name = input("Username: ")
