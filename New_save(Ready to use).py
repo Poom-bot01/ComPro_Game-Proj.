@@ -1,9 +1,7 @@
 import os
 
 User_data = "/home/dev/Vs-code project/Gameproj./Data/User_data.txt"
-worldle_data = "/home/dev/Vs-code project/Gameproj./Data/Worldle_data.txt"
-Typing_QTE_data = "/home/dev/Vs-code project/Gameproj./Data/Typing_QTE_data.txt"
-Boss_fight_data = "/home/dev/Vs-code project/Gameproj./Data/Boss_fight_data.txt"
+
 
 
 
