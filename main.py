@@ -6,10 +6,10 @@ import random
 # Import modularized components
 from login import menu, show_title, login, sign_up, clear_screen
 from intro import play_intro, show_stage_intro
-from wordle_game import run_wordle
+from Wordle_Stage import run_wordle
 from trading import run_shop
-from typing_game import run_typing_challenge
-from boss_battle import start_fight
+from typing import run_typing_challenge
+from Boss_Stage import start_fight
 from character import ArcaneMerchant
 from save_system import save_game, load_game, update_leaderboard, LEADERBOARD_FILE
 
