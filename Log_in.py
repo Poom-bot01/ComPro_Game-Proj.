@@ -42,62 +42,100 @@ def main():
             print("Please choose 1-3")
 
 def valid_password(password):
-    upper = lower = number = special = False
-    for sixseven in password:
-        if sixseven.isupper():
-            upper = True
-        elif sixseven.islower():
-            lower = True
-        elif sixseven.isdigit():
-            number = True
+    has_upper = False
+    has_lower = False
+    has_number = False
+    has_special = False
+ 
+    for letter in password:              
+        if letter.isupper():
+            has_upper = True
+        elif letter.islower():
+            has_lower = True
+        elif letter.isdigit():
+            has_number = True
         else:
-            special = True
-    return len(password) >= 8 and upper and lower and number and special
+            has_special = True
+ 
+    if len(password) < 8:
+        return False
+    if has_upper and has_lower and has_number and has_special:
+        return True
+    return False
+
+def password_taken(password, own_name):
+    for other_name in users:                        
+        if other_name != own_name and users[other_name] == password:
+            return True                             
+    return False
 
 def sign_up():
     while True:
         name = input("New username (blank to cancel): ")
         if name == "":
-            return
+            return                       
+ 
         password = input("New password: ")
-        if name not in users and valid_password(password):
+ 
+        if name in users:                
+            print("Invalid name or password")
+        elif valid_password(password) == False:
+            print("Invalid name or password")
+        elif password_taken(password, name):   
+            print("Invalid name or password")
+        else:
             input("[ Sign up ] Press Enter...")
-            users[name] = password
+            users[name] = password       
             print("Account created!")
             return
-        print("Invalid name or password")
 
 def reset_password(name):
     print("--- Reset password ---")
     while True:
         password = input("New password: ")
-        if valid_password(password):
+ 
+        if valid_password(password) == True and password_taken(password, name) == False:
             input("[ Reset password ] Press Enter...")
-            users[name] = password
+            users[name] = password       
             print("Password changed. Please log in again.")
             return
-        print("Invalid name or password")
+        else:
+            print("Invalid name or password")
 
 def login():
     name = input("Username: ")
-    for tries_left in [2, 1, 0]:
+    tries_left = 3
+ 
+    while tries_left > 0:
         password = input("Password (blank = forgot password): ")
-        if password == "" and name in users:
+ 
+        if password == "" and name in users:          
             reset_password(name)
             return None
-        if name in users and password == users[name]:
+        elif name in users and password == users[name]:   
             return name
-        print("Invalid name or password. " + str(tries_left) + " tries left")
+        else:                                          
+            tries_left = tries_left - 1
+            print("Invalid name or password. " + str(tries_left) + " tries left")
+
     print("Too many wrong attempts.")
     if name in users:
         reset_password(name)
     return None
 
-def hub():
+def hub(name):
     while True:
-        choice = menu("GAME HUB",
-        ["Start game", "Load saved", "Leaderboard", "Log out"])
-        if choice == "4":
-            return
+        choice = menu("GAME HUB - " + name,
+                      ["Start game", "Load saved", "Scoreboard", "Log out"])
+ 
+        if choice == "1":
+            start_game(name)
+        elif choice == "2":
+            load_saved(name)
+        elif choice == "3":
+            show_scoreboard(name)
+        elif choice == "4":
+            print("Logged out.")
+            return                         
         else:
             print("Please choose 1-4")
