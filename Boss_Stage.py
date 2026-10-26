@@ -1,15 +1,7 @@
-import os
 import random
 import time
 
-# ---------- Starting Player and Boss Stats ----------
-START_PLAYER_HP = 50
-MAX_PLAYER_HP = 50
-START_PLAYER_MANA = 30
-
-START_BOSS_HP = 100
-
-Boss_Art = r"""
+BOSS_ART_PHASE1 = r"""
 
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⠤⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡞⠁⡀⠀⠀⢳⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -32,11 +24,12 @@ Boss_Art = r"""
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⢢⡀⣌⠻⡆⠘⢿⣷⡀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢧⡹⡳⣿⠀⠀⠙⠻⠷⠄
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠾⢷⣠⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤⠤⠤⠤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡇⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀              ⠙⡇⠀⠀⠀⠀
 
 """
 
-Boss_Attack_Art = r"""
+
+BOSS_ART_PHASE2 = r"""
 ⠀⠀⣠⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⢠⢴⣿⣿⠟⠒⠂⠀⠀⠀⠀⠀⠀⢀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀
 ⠀⢸⠋⠘⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⣧⠀⠀⠀⠀⠀⢰⠒⢺⣿⣧⡀
@@ -57,128 +50,168 @@ Boss_Attack_Art = r"""
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⠃⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 """
 
+def render_hp_bar(current, max_hp=50, length=20):
+    percent = max(0, min(1, current / max_hp))
+    filled = int(length * percent)
+    return "[" + "#" * filled + "-" * (length - filled) + "]"
 
-def login_page():
-    # ----- Login Page -----
-    print("\n>>> Back to Login <<<")
+def start_fight(player):
+    """Stage 6: Two-Phase Boss Battle vs Demon Lord Malakor."""
+    print(BOSS_ART_PHASE1)
+    print("+====================================================================+")
+    print("|          FINAL STAGE: DEMON LORD MALAKOR BATTLE                    |")
+    print("+====================================================================+")
 
+    boss_hp = 100
+    boss_max_hp = 100
+    boss_atk = 12
 
-def boss_stage(player_data):
-    """player_data = {"name": ..., "score_total": ..., "death_count": ...}"""
-    # ----- Start -----
-    player_hp = START_PLAYER_HP
-    player_mana = START_PLAYER_MANA
-    boss_hp = START_BOSS_HP
+    # --- PHASE 1 COMBAT LOOP ---
+    while player.current_hp > 0 and boss_hp > 0:
+        print(f"\n| {player.name} HP: {render_hp_bar(player.current_hp, 50)} {player.current_hp}/50 | MANA: {player.mana}/45")
+        print(f"| MALAKOR : {render_hp_bar(boss_hp, boss_max_hp)} {boss_hp}/{boss_max_hp}")
+        print("+--------------------------------------------------------------------+")
+        print("| 1. NORMAL ATTACK (FREE)                                            |")
+        print("| 2. HEAVY ATTACK  (COSTS 15 MANA, 1.8X DAMAGE)                     |")
+        print("| 3. HEAL          (COSTS 10 MANA, RESTORES +20 HP)                  |")
+        print("+--------------------------------------------------------------------+")
 
-    # Print Story / Boss_dialog
+        action = input(">>> CHOOSE ACTION (1-3): ").strip()
 
-    print("\n*** Boss Stage ***")
-    print(Boss_Art)
-    print("Boss: What brings you here, mortal?")
-    time.sleep(1)
-
-    while True:
-        # ----- Check Loss Conditions -----
-        if player_hp <= 0:
-            print("Player_Death...")
-            defeat = True
-        elif player_mana <= 0:
-            print("You don't have any Mana left....")
-            defeat = True
-        else:
-            defeat = False
-
-        if defeat:
-            print("Player_Defeat")
-            player_data["death_count"] = player_data.get("death_count", 0) + 1
-            save_player_data(player_data)
-            login_page()
-            return False
-
-        # ----- Player Turn -----
-        print("\n####--- Player's Turn ---####")
-        print(f" ---Boss HP: {boss_hp}---")
-        print(f"\nName: {player_name} | HP: {player_hp} | Mana: {player_mana} ")
-        print("----Choose Your Action!!----")
-        print("Choice [1-3]")
-        print("[1] Attack (Mana 1) ")
-        print("[2] Heavy Attack (Mana 3)")
-        print("[3] Heal (Mana 5)")
-
-        while True:  # Loop until valid choice and sufficient mana
-            choice = input("Choose Your Action: ").strip()
-            if choice == "1" and player_mana >= 1:
-                print("\n[Action] You chose: Attack Boss")
-                boss_hp -= 3
-                player_mana -= 1
-                print(f"You used 1 Mana (Remaining: {player_mana})")
-                print(f"[Result] Boss lost 3 HP (Remaining: {boss_hp})")
-                time.sleep(1)
-            elif choice == "2" and player_mana >= 3:
-                print("\n[Action] You chose: Heavy Attack Boss")
-                boss_hp -= 5
-                player_mana -= 3
-                print(f"You used 3 Mana (Remaining: {player_mana})")
-                print(f"[Result] Boss lost 5 HP (Remaining: {boss_hp})")
-                time.sleep(1)
-            elif choice == "3" and player_mana >= 5:
-                if player_hp >= MAX_PLAYER_HP:
-                    print("You already full of Heal")
-                    continue
-                print("\n[Action] You chose: Heal")
-                healed = min(5, MAX_PLAYER_HP - player_hp)
-                player_hp += healed
-                player_mana -= 5
-                print(f"You used 5 Mana (Remaining: {player_mana})")
-                print(f"[Result] You healed {healed} HP (Remaining: {player_hp})")
-                time.sleep(1)
-            elif choice in ("1", "2", "3"):
-                print("You don't have enough mana Choose again")
-                continue
+        if action == "1":
+            damage = player.attack_power
+            boss_hp -= damage
+            print(f"| [>] YOU STRIKE MALAKOR FOR {damage} DAMAGE!")
+        elif action == "2":
+            if player.mana >= 15:
+                player.mana -= 15
+                damage = int(player.attack_power * 1.8)
+                boss_hp -= damage
+                print(f"| [*] HEAVY ATTACK DEALS {damage} DAMAGE!")
             else:
-                print("Invalid Choice Choose Again")
-                continue
+                print("| [!] INSUFFICIENT MANA! TURN SKIPPED.")
+        elif action == "3":
+            if player.mana >= 10:
+                player.mana -= 10
+                player.current_hp = min(50, player.current_hp + 20)
+                print(f"| [+] HEALED +20 HP! CURRENT HP: {player.current_hp}/50")
+            else:
+                print("| [!] INSUFFICIENT MANA!")
+        else:
+            print("| [!] INVALID ACTION! TURN SKIPPED.")
+
+        if boss_hp <= 0:
+            print("\n+----------------------------------------------------------+")
+            print("| [*] MALAKOR COLLAPSES!                 |")
+            print("+----------------------------------------------------------+")
             break
 
-        # ----- Check if Boss is Defeated -----
+        # Boss Turn (Phase 1)
+        if boss_hp < 50 and random.random() < 0.35:
+            heal_amount = random.randint(25, 40)
+            boss_hp = min(boss_max_hp, boss_hp + heal_amount)
+            print(f"| [!] DARK RECOVERY! MALAKOR HEALS +{heal_amount} HP! (HP: {boss_hp}/{boss_max_hp})")
+        else:
+            boss_damage = random.randint(boss_atk - 3, boss_atk + 4)
+            if player.cursed_status:
+                boss_damage += 3
+            player.current_hp -= boss_damage
+            print(f"| [-] MALAKOR RETALIATES FOR {boss_damage} DAMAGE!")
+
+    if player.current_hp <= 0:
+        return False
+
+    # --- PHASE TRANSITION STORY INTRO ---
+    time.sleep(1.5)
+    print("\n+====================================================================+")
+    print("|                  *** ABYSSAL RESURRECTION ***                      |")
+    print("+====================================================================+")
+    print("| As Malakor falls to one knee, dark smoke surges from the catacombs!|")
+    print("| The Demon Lord's armor shatters and transforms into pure shadows...|")
+    print("| Demon Lord Malakor awakens in his TRUE SHADOW FORM!                |")
+    print("| WARNING: Malakor is now highly evasive! Attacks have a miss chance!|")
+    print("+====================================================================+")
+    input("\n>>> PRESS [ENTER] TO FACE PHASE 2...")
+
+    # Phase 2 Stats
+    print(BOSS_ART_PHASE2)
+    print("+====================================================================+")
+    print("|          FINAL STAGE: DEMON LORD MALAKOR BATTLE                    |")
+    print("+====================================================================+")
+
+    boss_hp = 200
+    boss_max_hp = 200
+    boss_atk = 16
+    miss_chance = 0.35
+
+    # --- PHASE 2 COMBAT LOOP ---
+    while player.current_hp > 0 and boss_hp > 0:
+        print(f"\n| {player.name} HP: {render_hp_bar(player.current_hp, 50)} {player.current_hp}/50 | MANA: {player.mana}/45")
+        print(f"| MALAKOR : {render_hp_bar(boss_hp, boss_max_hp)} {boss_hp}/{boss_max_hp}")
+        print("+--------------------------------------------------------------------+")
+        print("| 1. NORMAL ATTACK (FREE)                                            |")
+        print("| 2. HEAVY ATTACK  (COSTS 15 MANA, 1.8X DAMAGE)                      |")
+        print("| 3. HEAL          (COSTS 10 MANA, RESTORES +20 HP)                  |")
+        print("+--------------------------------------------------------------------+")
+
+        action = input(">>> CHOOSE ACTION (1-3): ").strip()
+
+        if action in ["1", "2"]:
+            if random.random() < miss_chance:
+                if action == "2":
+                    if player.mana >= 15:
+                        player.mana -= 15
+                    else:
+                        print("| [!] INSUFFICIENT MANA! TURN SKIPPED.")
+                        continue
+                print("| [!] ATTACK MISSED! Malakor shifted into shadows and dodged your blow!")
+            else:
+                if action == "1":
+                    damage = player.attack_power
+                    boss_hp -= damage
+                    print(f"| [>] DIRECT HIT! YOU STRIKE MALAKOR FOR {damage} DAMAGE!")
+                elif action == "2":
+                    if player.mana >= 15:
+                        player.mana -= 15
+                        damage = int(player.attack_power * 1.8)
+                        boss_hp -= damage
+                        print(f"| [*] CRITICAL HIT! HEAVY ATTACK DEALS {damage} DAMAGE!")
+                    else:
+                        print("| [!] INSUFFICIENT MANA! TURN SKIPPED.")
+
+        elif action == "3":
+            if player.mana >= 10:
+                player.mana -= 10
+                player.current_hp = min(50, player.current_hp + 20)
+                print(f"| [+] HEALED +20 HP! CURRENT HP: {player.current_hp}/50")
+            else:
+                print("| [!] INSUFFICIENT MANA!")
+        else:
+            print("| [!] INVALID ACTION! TURN SKIPPED.")
+
         if boss_hp <= 0:
-            print("Player_Clear_Stage!!!")
-            print("You have defeated the boss and cleared the stage!")
-            player_data["score_total"] = player_data.get("score_total", 0) + 200
-            save_player_data(player_data)
-            time.sleep(1)
-            login_page()
+            print("\n+----------------------------------------------------------+")
+            print("| [*] FINAL VICTORY! DEMON LORD MALAKOR DESTROYED FOREVER! |")
+            
+            run_score = player.gold_balance + (player.current_hp * 10) + 200
+            player.latest_score = run_score
+            player.high_score = max(player.high_score, run_score)
+            
+            print(f"| LATEST RUN SCORE : {player.latest_score:<38} |")
+            print(f"| ALL-TIME HIGH    : {player.high_score:<38} |")
+            print("+----------------------------------------------------------+")
             return True
 
-        # ----- Boss Turn (Boss_Tactical: Random) -----
-        time.sleep(1)
-        print("\n###--- Boss's Turn ---###")
-        
-        print(Boss_Attack_Art)
-        time.sleep(0.5)
+        # Boss Turn (Phase 2)
+        if boss_hp < 100 and random.random() < 0.40:
+            heal_amount = random.randint(30, 45)
+            boss_hp = min(boss_max_hp, boss_hp + heal_amount)
+            print(f"| [!] VOID RECOVERY! MALAKOR DRAINS SHADOWS AND HEALS +{heal_amount} HP!")
+        else:
+            boss_damage = random.randint(boss_atk - 3, boss_atk + 5)
+            if player.cursed_status:
+                boss_damage += 4
+            player.current_hp -= boss_damage
+            print(f"| [-] MALAKOR STRIKES FROM THE SHADOWS FOR {boss_damage} DAMAGE!")
 
-        boss_options = ["attack", "heavy_attack"]
-            if boss_hp < 50:
-                boss_options.append("heal")
-            boss_action = random.choice(boss_options)
-
-            if boss_action == "attack":
-                print("[Action] Boss chose: Attack")
-                player_hp -= 5
-                print(f"[Result] You lost 5 HP (Remaining: {player_hp})")
-
-            elif boss_action == "heavy_attack":
-                print("[Action] Boss chose: Heavy Attack")
-                player_hp -= 10
-                print(f"[Result] You lost 10 HP (Remaining: {player_hp})")
-
-            else:
-                print("[Action] Boss chose: Heal")
-                boss_hp += 20
-                print(f"[Result] Boss healed 20 HP (Remaining: {boss_hp})")
-
-        # Check if Boss HP exceeds starting HP
-
-#if __name__ == "__main__":
- #   data = load_player_data()
-  #  boss_stage(data)
+    return False
