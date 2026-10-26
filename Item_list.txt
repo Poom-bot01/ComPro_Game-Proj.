@@ -1,0 +1,12 @@
+Ironclad Breastplate,120,50,-10,30,Cold metal remembers battles of the past
+Crown of Fallen King,200,40,30,-20,The inner rim is stained with dried blood
+Amulet of Endless Void,180,-10,50,15,A silent darkness follows whoever holds it
+Rune-Carved Dagger,150,-10,20,50,Ancient symbols glow beneath the worn handle
+Scroll of Hollow Words,100,15,40,-5,The ink fades as you read
+Serpent Fang Blade,160,-20,0,45,Something slithers when you look away
+Gravedigger's Ring,130,40,-15,30,Cold soil still clings to it
+Warden's Shield,140,30,-10,40,Dents from a hundred blows; it never breaks
+Black Rose Dagger,170,-15,30,50,Petals fall whenever it's drawn
+Widow's Lantern,110,-10,35,25,Its flame burns cold
+Codex of Silent Stars,190,40,60,20,Each page is a different sky
+Crown of Thorns and Gold,250,60,30,40,It is heavier than it looks
