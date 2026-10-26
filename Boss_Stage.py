@@ -1,8 +1,8 @@
+import os
 import random
 import time
 
 BOSS_ART_PHASE1 = r"""
-
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⠤⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡞⠁⡀⠀⠀⢳⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⡏⠉⠙⡀⠀⢣⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -24,10 +24,8 @@ BOSS_ART_PHASE1 = r"""
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⢢⡀⣌⠻⡆⠘⢿⣷⡀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢧⡹⡳⣿⠀⠀⠙⠻⠷⠄
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠾⢷⣠⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀              ⠙⡇⠀⠀⠀⠀
-
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡇⠀⠀⠀⠀
 """
-
 
 BOSS_ART_PHASE2 = r"""
 ⠀⠀⣠⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -59,7 +57,7 @@ def start_fight(player):
     """Stage 6: Two-Phase Boss Battle vs Demon Lord Malakor."""
     print(BOSS_ART_PHASE1)
     print("+====================================================================+")
-    print("|          FINAL STAGE: DEMON LORD MALAKOR BATTLE                    |")
+    print("|         FINAL STAGE: DEMON LORD MALAKOR BATTLE                     |")
     print("+====================================================================+")
 
     boss_hp = 100
@@ -72,7 +70,7 @@ def start_fight(player):
         print(f"| MALAKOR : {render_hp_bar(boss_hp, boss_max_hp)} {boss_hp}/{boss_max_hp}")
         print("+--------------------------------------------------------------------+")
         print("| 1. NORMAL ATTACK (FREE)                                            |")
-        print("| 2. HEAVY ATTACK  (COSTS 15 MANA, 1.8X DAMAGE)                     |")
+        print("| 2. HEAVY ATTACK  (COSTS 15 MANA, 1.8X DAMAGE)                      |")
         print("| 3. HEAL          (COSTS 10 MANA, RESTORES +20 HP)                  |")
         print("+--------------------------------------------------------------------+")
 
@@ -102,7 +100,7 @@ def start_fight(player):
 
         if boss_hp <= 0:
             print("\n+----------------------------------------------------------+")
-            print("| [*] MALAKOR COLLAPSES!                 |")
+            print("| [*] MALAKOR COLLAPSES!                                   |")
             print("+----------------------------------------------------------+")
             break
 
@@ -124,7 +122,7 @@ def start_fight(player):
     # --- PHASE TRANSITION STORY INTRO ---
     time.sleep(1.5)
     print("\n+====================================================================+")
-    print("|                  *** ABYSSAL RESURRECTION ***                      |")
+    print("|                    *** ABYSSAL RESURRECTION ***                    |")
     print("+====================================================================+")
     print("| As Malakor falls to one knee, dark smoke surges from the catacombs!|")
     print("| The Demon Lord's armor shatters and transforms into pure shadows...|")
@@ -136,7 +134,7 @@ def start_fight(player):
     # Phase 2 Stats
     print(BOSS_ART_PHASE2)
     print("+====================================================================+")
-    print("|          FINAL STAGE: DEMON LORD MALAKOR BATTLE                    |")
+    print("|         FINAL STAGE: DEMON LORD MALAKOR BATTLE                     |")
     print("+====================================================================+")
 
     boss_hp = 200
