@@ -14,7 +14,7 @@ level_time = {
 
 pools = {
     1: ["yoho", "god", "wallah", "ZOOS", "triplet", "doublet", "easymode", "superrevolution"],
-    2: ["artemis", "fabledlegacy", "elephantintheroom", "iamconputerguy", "ambussingough", "triangledriod", "adrenalines", "typethisasfastasyoucanusuallyyoucantlol"],
+    2: ["artemis", "fabledlegacy", "elephantintheroom", "iamconputerguy", "ambussingough", "triangledriod", "adrenalines", "antigenesis"],
     3: ["extraordinary", "responsibility", "claustrophobia", "misunderstanding",
         "uncomfortable", "revolutionary", "disproportionate", "unfortunateson"],
 } # word pools based on lvl (words are subject to change)
