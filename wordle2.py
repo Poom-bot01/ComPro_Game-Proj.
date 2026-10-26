@@ -30,25 +30,8 @@ def colorize(text, marker):
         return "\033[33m" + text + "\033[0m"
     return text
 
-def load_answer_words():
-    """Load possible 5-letter answers from file or fallback list."""
-    answer_words_file = Path(__file__).with_name("answer_words.txt")
-    answer_words = []
-
-    if answer_words_file.exists():
-        with open(answer_words_file, "r", encoding="utf-8") as file:
-            for line in file:
-                word = line.strip().lower()
-                if word and len(word) == word_length and word.isascii() and word.isalpha():
-                    answer_words.append(word)
-
-    if not answer_words:
-        answer_words = list(RUNE_CLUES.keys())
-
-    return answer_words
-
 def load_rune_clues():
-    """Load per-word clues from the rune_clues.txt file."""
+    """Load valid answer words and their clues from rune_clues.txt."""
     clues_file = Path(__file__).with_name("rune_clues.txt")
     clues = {}
 
@@ -66,7 +49,15 @@ def load_rune_clues():
                     f"Invalid clue format in {clues_file.name} at line {line_number}; "
                     "expected word|clue."
                 )
+            if len(word) != word_length or not word.isascii() or not word.isalpha():
+                raise ValueError(
+                    f"Invalid answer word in {clues_file.name} at line {line_number}; "
+                    f"expected a {word_length}-letter English word."
+                )
             clues[word] = clue
+
+    if not clues:
+        raise ValueError(f"No answer words and clues found in {clues_file}.")
 
     return clues
 
@@ -167,10 +158,9 @@ def render_dashboard(guesses, player, clue, message=""):
 
 def run_wordle(player):
     """Executes Stage 2 Wordle using the player profile state."""
-    answer_words = load_answer_words()
     rune_clues = load_rune_clues()
-    secret_word = random.choice(answer_words)
-    clue = rune_clues.get(secret_word, "An ancient 5-letter arcane rune.")
+    secret_word = random.choice(list(rune_clues))
+    clue = rune_clues[secret_word]
     
     guesses = []
     start_time = time.time()
@@ -228,10 +218,3 @@ def run_wordle(player):
         else:
             if message:
                 render_dashboard(guesses, player, clue, message)
-
-
-if __name__ == "__main__":
-    # Example usage with a default player
-    from character import ArcaneMerchant  # Assuming the ArcaneMerchant class is in this file
-    player = ArcaneMerchant("DefaultPlayer")
-    run_wordle(player)
