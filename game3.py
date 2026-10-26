@@ -16,22 +16,27 @@ pools = {
     1: ["yoho", "god", "wallah", "ZOOS", "triplet", "doublet", "easymode", "superrevolution"],
     2: ["artemis", "fabledlegacy", "elephantintheroom", "iamconputerguy", "ambussingough", "triangledriod", "adrenalines", "typethisasfastasyoucanusuallyyoucantlol"],
     3: ["extraordinary", "responsibility", "claustrophobia", "misunderstanding",
-        "uncomfortable", "revolutionary", "disproportionate", "mostunconventionalpickeverlikeifyougotthisinplaythroughthengg"],
+        "uncomfortable", "revolutionary", "disproportionate", "unfortunateson"],
 } # word pools based on lvl (words are subject to change)
 
 interval = 0.05 # how often countdown redraws
 
 quit = object() # qutting game via ctrl c
 
+score_base = {1: 100, 2: 200, 3: 300} # max points per lvl
+min_fraction = 0.5 # correct answer at the last second still earns 50% of max
+max_fraction = 0.9 # instant answer earns 90% of max
+penalty = {1: 20, 2: 40, 3: 60} # points lost per lvl on wrong word or timeout
+
 
 def calculate_score_gain(time_remaining: float, time_limit: float, level: int) -> int:
-# score calc here
-    return 0
+    time_ratio = time_remaining / time_limit
+    multiplier = min_fraction + (max_fraction - min_fraction) * time_ratio
+    return round(score_base[level] * multiplier)
 
 
 def calculate_score_loss(level: int) -> int:
-# score calc here
-    return 0
+    return penalty[level]
 
 
 def pick_word(level: int) -> str: # pick random words from pools
@@ -51,7 +56,7 @@ def wait_for_key(message: str) -> bool: # pauses the game untill player press an
 
 
 def draw_status_line(time_left: float, typed: str) -> None: # player status in game
-    sys.stdout.write(f"\r\033[time left: {max(time_left, 0):4.1f}s  |  > {typed}")
+    sys.stdout.write(f"\r\033[K  time left: {max(time_left, 0):4.1f}s  |  > {typed}")
     sys.stdout.flush()
 
 
@@ -130,7 +135,7 @@ def show_intro() -> bool: # intro (subject to change), returns False if ctrl+c
     print("typer game")
     print("=====")
     print("welcome... to type game... type as fast as you can")
-    return wait_for_key("press any key to start") # CHANGED: was input()
+    return wait_for_key("press any key to start")
 
 
 def start_next_stage(score: int) -> int: # called when player clear last lvl
@@ -174,3 +179,7 @@ def main() -> None:
     score = play_game()
     if score is None:
         print("\n\ngame aborted. bye")
+
+
+if __name__ == "__main__":
+    main()
