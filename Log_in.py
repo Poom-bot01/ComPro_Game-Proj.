@@ -8,21 +8,21 @@ def menu(title, options):
 
 def show_title():
     print(f"""
-   ✦       ·        ⋆      ˚       ✧       ·       ⋆       ˚       ✦ 
+✦   ˚    ·        ⋆      ˚       ✧       ·       ⋆       ˚        ✦ 
       ·    █████  ██████   ██████  █████  ███    ██ ███████    ✧      
-    ⋆     ██   ██ ██   ██ ██      ██   ██ ████   ██ ██            ·   
-  ˖    ˚  ███████ ██████  ██      ███████ ██ ██  ██ █████      ⋆    
-      ⋆   ██   ██ ██   ██ ██      ██   ██ ██  ██ ██ ██            ✧    
+    ⋆     ██   ██ ██   ██ ██      ██   ██ ████   ██ ██         ˖   ·   
+  ˖    ˚  ███████ ██████  ██      ███████ ██ ██  ██ █████    ⋆    
+      ⋆   ██   ██ ██   ██ ██      ██   ██ ██  ██ ██ ██           ✧    
    ˚      ██   ██ ██   ██  ██████ ██   ██ ██   ████ ███████    ·     
- ·   ✦       ·        ⋆      ˚    ✧  ⋆         ·       ⋆       ˚    ✦
+ ·   ✦       ·        ⋆      ˚      ⋆         ·       ⋆       ˚    ✦
 ███    ███ ███████ ██████   ██████ ██   ██  █████  ███    ██ ████████ 
 ████  ████ ██      ██   ██ ██      ██   ██ ██   ██ ████   ██    ██    
 ██ ████ ██ █████   ██████  ██      ███████ ███████ ██ ██  ██    ██    
 ██  ██  ██ ██      ██   ██ ██      ██   ██ ██   ██ ██  ██ ██    ██    
 ██      ██ ███████ ██   ██  ██████ ██   ██ ██   ██ ██   ████    ██ 
- ˚    ⋆    ✧     ·     ✦    ˚     ˖    ⋆     ·    ✦  ˖     ˚    ⋆   
-✦    ⋆   ˚    ˖   ⋆   The Spellbound Journey  ✧   ·   ˚    ˖   ⋆    ✦     
-   ˚       ✧        ·       ˚     ✦   ⋆       ·      ✧        ˚    ⋆   
+   ˚       ✦     ⋆        ˚     ⋆      ·      ˖    ˖   ˚       ⋆   
+ ˚    ✦      ·  ✧   The Spellbound Journey   ✧  ·       ⋆   ✦  ˚   
+   ˚     ✧    ˖          ⋆    ˚     ✦      ·      ˖        ˚    ⋆   
 """)
 
 def main():
@@ -41,53 +41,37 @@ def main():
         else:
             print("Please choose 1-3")
 
-def valid_password(password):
-    has_upper = False
-    has_lower = False
-    has_number = False
-    has_special = False
- 
-    for letter in password:              
-        if letter.isupper():
-            has_upper = True
-        elif letter.islower():
-            has_lower = True
-        elif letter.isdigit():
-            has_number = True
-        else:
-            has_special = True
- 
-    if len(password) < 8:
-        return False
-    if has_upper and has_lower and has_number and has_special:
-        return True
-    return False
-
 def password_taken(password, own_name):
-    for other_name in users:                        
+    for other_name in users:                         
         if other_name != own_name and users[other_name] == password:
-            return True                             
+            return True                              
     return False
+    
+def valid_password(password):
+    upper = lower = number = special = False
+    for sixseven in password:
+        if sixseven.isupper():
+            upper = True
+        elif sixseven.islower():
+            lower = True
+        elif sixseven.isdigit():
+            number = True
+        else:
+            special = True
+    return len(password) >= 8 and upper and lower and number and special
 
 def sign_up():
     while True:
         name = input("New username (blank to cancel): ")
         if name == "":
-            return                       
- 
+            return
         password = input("New password: ")
- 
-        if name in users:                
-            print("Invalid name or password")
-        elif valid_password(password) == False:
-            print("Invalid name or password")
-        elif password_taken(password, name):   
-            print("Invalid name or password")
-        else:
+        if name not in users and valid_password(password):
             input("[ Sign up ] Press Enter...")
-            users[name] = password       
+            users[name] = password
             print("Account created!")
             return
+        print("Invalid name or password")
 
 def reset_password(name):
     print("--- Reset password ---")
@@ -104,20 +88,14 @@ def reset_password(name):
 
 def login():
     name = input("Username: ")
-    tries_left = 3
- 
-    while tries_left > 0:
+    for tries_left in [2, 1, 0]:
         password = input("Password (blank = forgot password): ")
- 
-        if password == "" and name in users:          
+        if password == "" and name in users:
             reset_password(name)
             return None
-        elif name in users and password == users[name]:   
+        if name in users and password == users[name]:
             return name
-        else:                                          
-            tries_left = tries_left - 1
-            print("Invalid name or password. " + str(tries_left) + " tries left")
-
+        print("Invalid name or password. " + str(tries_left) + " tries left")
     print("Too many wrong attempts.")
     if name in users:
         reset_password(name)
@@ -136,6 +114,6 @@ def hub(name):
             show_scoreboard(name)
         elif choice == "4":
             print("Logged out.")
-            return                         
+            return                          
         else:
             print("Please choose 1-4")
