@@ -1,51 +1,47 @@
-import re
-from pathlib import Path
+import os
 
-USER_DIR = Path(__file__).with_name("users")
-
-
-def _path(username):
-    """คืน path ไฟล์ของ user ถ้า username ไม่ปลอดภัยคืน None"""
-    if not re.fullmatch(r"[A-Za-z0-9_-]{1,32}", username):
-        return None  # กันชื่อแปลก เช่น ../x ที่เขียนออกนอกโฟลเดอร์
-    return USER_DIR / f"{username}.txt"
+User_data = "./Data/Userdata.txt"
+worldle_data = "./Data/Worldle_data.txt"
+Typing_QTE_data = "./Data/Typing_QTE_data.txt"
+Boss_fight_data = "./Data/Boss_fight_data.txt"
 
 
-def create_user(username, password):
-    """สมัครใหม่ ถ้ามีไฟล์ของ user นี้อยู่แล้วจะไม่ทับ คืน True=สำเร็จ"""
-    path = _path(username)
-    if path is None:
-        return False
-    USER_DIR.mkdir(exist_ok=True)
-    try:
-        with open(path, "x", encoding="utf-8") as f:  # "x" = สร้างใหม่เท่านั้น
-            f.write(f"{username}\n{password}\n")
-    except FileExistsError:
-        return False
-    return True
 
 
-def update_user(username, password):
-    """อัพเดทรหัสผ่านของ user ที่มีอยู่แล้ว คืน True=สำเร็จ"""
-    path = _path(username)
-    if path is None or not path.exists():
-        return False
-    path.write_text(f"{username}\n{password}\n", encoding="utf-8")
-    return True
+def saveUser_data(filename, data):
+    tmp = filename + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        for name, pw in data.items():
+            f.write(f"{name}={pw}\n")
+    os.replace(tmp, filename)
 
+def loadUser_data(filename=User_data):
+    data = {}
+    if filename is None or not os.path.exists(filename):
+        return data
+    with open(filename, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if "=" not in line:
+                continue
+            name, pw = line.split("=", 1)
+            data[name.strip()] = pw.strip()
+    return data
 
-def load_user(username):
-    """อ่านกลับ คืน (username, password) ไม่มีหรือข้อมูลไม่ครบคืน None"""
-    path = _path(username)
-    if path is None:
-        return None
-    try:
-        lines = path.read_text(encoding="utf-8").splitlines()
-    except FileNotFoundError:
-        return None
-    if len(lines) < 2:
-        return None
-    return lines[0], lines[1]
+def Typing_QTE_Record(player, wpm, correct, total):
+    player["typing_rounds"] += 1
+    player["wpm_total"] += wpm
+    player["chars_correct"] += correct
+    player["chars_total"] += total
+
+def Worldle_Record(player, seconds):
+    player["wordle_solves"] += 1
+    player["wordle_time_total"] += seconds
+
+def Boss_fight_Record(player, stage):
+    if stage not in player["bosses_defeated"]:
+        player["bosses_defeated"].append(stage)
+
 
 #if __name__ == "__main__":
 #    name = input("Username: ")
